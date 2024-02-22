@@ -21,42 +21,91 @@ switch *call_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEM
 *NOT_IMPLEMENTED:
 	err
 
-// sayHello(string)string
-*abi_route_sayHello:
+// sum(uint64,uint64)uint64
+*abi_route_sum:
 	// The ABI return prefix
 	byte 0x151f7c75
 
-	// word: string
-	txna ApplicationArgs 1
-	extract 2 0
+	// b: uint64
+	txna ApplicationArgs 2
+	btoi
 
-	// execute sayHello(string)string
-	callsub sayHello
-	dup
-	len
+	// a: uint64
+	txna ApplicationArgs 1
+	btoi
+
+	// execute sum(uint64,uint64)uint64
+	callsub sum
 	itob
-	extract 6 2
-	swap
-	concat
 	concat
 	log
 	int 1
 	return
 
-// sayHello(word: string): string
+// sum(a: number, b: number): number
 //
-// Says Hello World
+// Adds a and b
 //
-// @param word
-// @returns String "Hello, " plus the word value
-sayHello:
-	proto 1 1
+// @param a
+// @param b
+// @returns Result of adding a and b
+sum:
+	proto 2 1
 
-	// contracts/demo-tealscript.algo.ts:12
-	// return 'Hello, ' + word;
-	byte 0x48656c6c6f2c20 // "Hello, "
-	frame_dig -1 // word: string
+	// contracts/demo-tealscript.algo.ts:13
+	// return a + b;
+	frame_dig -1 // a: number
+	frame_dig -2 // b: number
+	+
+	retsub
+
+// difference(uint64,uint64)uint64
+*abi_route_difference:
+	// The ABI return prefix
+	byte 0x151f7c75
+
+	// b: uint64
+	txna ApplicationArgs 2
+	btoi
+
+	// a: uint64
+	txna ApplicationArgs 1
+	btoi
+
+	// execute difference(uint64,uint64)uint64
+	callsub difference
+	itob
 	concat
+	log
+	int 1
+	return
+
+// difference(a: number, b: number): number
+difference:
+	proto 2 1
+
+	// *if0_condition
+	// contracts/demo-tealscript.algo.ts:17
+	// a < b
+	frame_dig -1 // a: number
+	frame_dig -2 // b: number
+	<
+	bz *if0_end
+
+	// *if0_consequent
+	// contracts/demo-tealscript.algo.ts:18
+	// return b - a;
+	frame_dig -2 // b: number
+	frame_dig -1 // a: number
+	-
+	retsub
+
+*if0_end:
+	// contracts/demo-tealscript.algo.ts:20
+	// return a - b;
+	frame_dig -1 // a: number
+	frame_dig -2 // b: number
+	-
 	retsub
 
 *abi_route_createApplication:
@@ -70,7 +119,8 @@ sayHello:
 	err
 
 *call_NoOp:
-	method "sayHello(string)string"
+	method "sum(uint64,uint64)uint64"
+	method "difference(uint64,uint64)uint64"
 	txna ApplicationArgs 0
-	match *abi_route_sayHello
+	match *abi_route_sum *abi_route_difference
 	err

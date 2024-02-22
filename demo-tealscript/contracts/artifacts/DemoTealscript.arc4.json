@@ -3,17 +3,37 @@
   "desc": "",
   "methods": [
     {
-      "name": "sayHello",
-      "desc": "Says Hello World",
+      "name": "sum",
+      "desc": "Adds a and b",
       "args": [
         {
-          "name": "word",
-          "type": "string"
+          "name": "a",
+          "type": "uint64"
+        },
+        {
+          "name": "b",
+          "type": "uint64"
         }
       ],
       "returns": {
-        "type": "string",
-        "desc": "String \"Hello, \" plus the word value"
+        "type": "uint64",
+        "desc": "Result of adding a and b"
+      }
+    },
+    {
+      "name": "difference",
+      "args": [
+        {
+          "name": "a",
+          "type": "uint64"
+        },
+        {
+          "name": "b",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "uint64"
       }
     },
     {

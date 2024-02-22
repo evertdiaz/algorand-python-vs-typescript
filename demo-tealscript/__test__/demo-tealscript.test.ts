@@ -27,9 +27,17 @@ describe('DemoTealscript', () => {
     await appClient.create.createApplication({});
   });
 
-  test('says hello', async () => {
-    const word = 'World';
-    const hello = await appClient.sayHello({ word });
-    expect(hello.return?.valueOf()).toBe('Hello, World');
+  test('sum', async () => {
+    const a = 25;
+    const b = 29;
+    const hello = await appClient.sum({ a, b });
+    expect(hello.return?.valueOf()).toEqual(BigInt(54));
+  });
+
+  test('difference', async () => {
+    const a = 29;
+    const b = 25;
+    const hello = await appClient.difference({ a, b });
+    expect(hello.return?.valueOf()).toEqual(BigInt(4));
   });
 });

@@ -29,14 +29,19 @@ import type { ABIResult, TransactionWithSigner } from 'algosdk'
 import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer, modelsv2 } from 'algosdk'
 export const APP_SPEC: AppSpec = {
   "hints": {
-    "hello(string)string": {
+    "sum(uint64,uint64)uint64": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "difference(uint64,uint64)uint64": {
       "call_config": {
         "no_op": "CALL"
       }
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgpzbWFydF9jb250cmFjdHMuZGVtby5jb250cmFjdC5EZW1vLmFwcHJvdmFsX3Byb2dyYW06CiAgICAvLyBzbWFydF9jb250cmFjdHMvZGVtby9jb250cmFjdC5weTo0CiAgICAvLyBjbGFzcyBEZW1vKEFSQzRDb250cmFjdCk6CiAgICB0eG4gTnVtQXBwQXJncwogICAgYnogbWFpbl9iYXJlX3JvdXRpbmdANQogICAgbWV0aG9kICJoZWxsbyhzdHJpbmcpc3RyaW5nIgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAogICAgbWF0Y2ggbWFpbl9oZWxsb19yb3V0ZUAyCiAgICBlcnIgLy8gcmVqZWN0IHRyYW5zYWN0aW9uCgptYWluX2hlbGxvX3JvdXRlQDI6CiAgICAvLyBzbWFydF9jb250cmFjdHMvZGVtby9jb250cmFjdC5weTo1CiAgICAvLyBAYXJjNC5hYmltZXRob2QoKQogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgYXNzZXJ0IC8vIE9uQ29tcGxldGlvbiBpcyBOb09wCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgYXNzZXJ0IC8vIGlzIG5vdCBjcmVhdGluZwogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6NAogICAgLy8gY2xhc3MgRGVtbyhBUkM0Q29udHJhY3QpOgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6NQogICAgLy8gQGFyYzQuYWJpbWV0aG9kKCkKICAgIGNhbGxzdWIgaGVsbG8KICAgIGJ5dGUgMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludCAxCiAgICByZXR1cm4KCm1haW5fYmFyZV9yb3V0aW5nQDU6CiAgICAvLyBzbWFydF9jb250cmFjdHMvZGVtby9jb250cmFjdC5weTo0CiAgICAvLyBjbGFzcyBEZW1vKEFSQzRDb250cmFjdCk6CiAgICB0eG4gT25Db21wbGV0aW9uCiAgICAhCiAgICBhc3NlcnQgLy8gcmVqZWN0IHRyYW5zYWN0aW9uCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgIQogICAgYXNzZXJ0IC8vIGlzIGNyZWF0aW5nCiAgICBpbnQgMQogICAgcmV0dXJuCgoKLy8gc21hcnRfY29udHJhY3RzLmRlbW8uY29udHJhY3QuRGVtby5oZWxsbyhuYW1lOiBieXRlcykgLT4gYnl0ZXM6CmhlbGxvOgogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6NS02CiAgICAvLyBAYXJjNC5hYmltZXRob2QoKQogICAgLy8gZGVmIGhlbGxvKHNlbGYsIG5hbWU6IGFyYzQuU3RyaW5nKSAtPiBhcmM0LlN0cmluZzoKICAgIHByb3RvIDEgMQogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6NwogICAgLy8gcmV0dXJuICJIZWxsbywgIiArIG5hbWUKICAgIGZyYW1lX2RpZyAtMQogICAgZXh0cmFjdCAyIDAKICAgIGJ5dGUgIkhlbGxvLCAiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMAogICAgc3dhcAogICAgY29uY2F0CiAgICByZXRzdWIK",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgpzbWFydF9jb250cmFjdHMuZGVtby5jb250cmFjdC5EZW1vLmFwcHJvdmFsX3Byb2dyYW06CiAgICAvLyBzbWFydF9jb250cmFjdHMvZGVtby9jb250cmFjdC5weTo0CiAgICAvLyBjbGFzcyBEZW1vKEFSQzRDb250cmFjdCk6CiAgICB0eG4gTnVtQXBwQXJncwogICAgYnogbWFpbl9iYXJlX3JvdXRpbmdANgogICAgbWV0aG9kICJzdW0odWludDY0LHVpbnQ2NCl1aW50NjQiCiAgICBtZXRob2QgImRpZmZlcmVuY2UodWludDY0LHVpbnQ2NCl1aW50NjQiCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAwCiAgICBtYXRjaCBtYWluX3N1bV9yb3V0ZUAyIG1haW5fZGlmZmVyZW5jZV9yb3V0ZUAzCiAgICBlcnIgLy8gcmVqZWN0IHRyYW5zYWN0aW9uCgptYWluX3N1bV9yb3V0ZUAyOgogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6NQogICAgLy8gQGFyYzQuYWJpbWV0aG9kKCkKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIGFzc2VydCAvLyBPbkNvbXBsZXRpb24gaXMgTm9PcAogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgIGFzc2VydCAvLyBpcyBub3QgY3JlYXRpbmcKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9kZW1vL2NvbnRyYWN0LnB5OjQKICAgIC8vIGNsYXNzIERlbW8oQVJDNENvbnRyYWN0KToKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGJ0b2kKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9kZW1vL2NvbnRyYWN0LnB5OjUKICAgIC8vIEBhcmM0LmFiaW1ldGhvZCgpCiAgICBjYWxsc3ViIHN1bQogICAgaXRvYgogICAgYnl0ZSAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50IDEKICAgIHJldHVybgoKbWFpbl9kaWZmZXJlbmNlX3JvdXRlQDM6CiAgICAvLyBzbWFydF9jb250cmFjdHMvZGVtby9jb250cmFjdC5weTo5CiAgICAvLyBAYXJjNC5hYmltZXRob2QoKQogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgYXNzZXJ0IC8vIE9uQ29tcGxldGlvbiBpcyBOb09wCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgYXNzZXJ0IC8vIGlzIG5vdCBjcmVhdGluZwogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6NAogICAgLy8gY2xhc3MgRGVtbyhBUkM0Q29udHJhY3QpOgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgYnRvaQogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6OQogICAgLy8gQGFyYzQuYWJpbWV0aG9kKCkKICAgIGNhbGxzdWIgZGlmZmVyZW5jZQogICAgaXRvYgogICAgYnl0ZSAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50IDEKICAgIHJldHVybgoKbWFpbl9iYXJlX3JvdXRpbmdANjoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9kZW1vL2NvbnRyYWN0LnB5OjQKICAgIC8vIGNsYXNzIERlbW8oQVJDNENvbnRyYWN0KToKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIGFzc2VydCAvLyByZWplY3QgdHJhbnNhY3Rpb24KICAgIHR4biBBcHBsaWNhdGlvbklECiAgICAhCiAgICBhc3NlcnQgLy8gaXMgY3JlYXRpbmcKICAgIGludCAxCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuZGVtby5jb250cmFjdC5EZW1vLnN1bShhOiB1aW50NjQsIGI6IHVpbnQ2NCkgLT4gdWludDY0OgpzdW06CiAgICAvLyBzbWFydF9jb250cmFjdHMvZGVtby9jb250cmFjdC5weTo1LTYKICAgIC8vIEBhcmM0LmFiaW1ldGhvZCgpCiAgICAvLyBkZWYgc3VtKHNlbGYsIGE6IFVJbnQ2NCwgYjogVUludDY0KSAtPiBVSW50NjQ6CiAgICBwcm90byAyIDEKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9kZW1vL2NvbnRyYWN0LnB5OjcKICAgIC8vIHJldHVybiBhICsgYgogICAgZnJhbWVfZGlnIC0yCiAgICBmcmFtZV9kaWcgLTEKICAgICsKICAgIHJldHN1YgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5kZW1vLmNvbnRyYWN0LkRlbW8uZGlmZmVyZW5jZShhOiB1aW50NjQsIGI6IHVpbnQ2NCkgLT4gdWludDY0OgpkaWZmZXJlbmNlOgogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6OS0xMAogICAgLy8gQGFyYzQuYWJpbWV0aG9kKCkKICAgIC8vIGRlZiBkaWZmZXJlbmNlKHNlbGYsIGE6IFVJbnQ2NCwgYjogVUludDY0KSAtPiBVSW50NjQ6CiAgICBwcm90byAyIDEKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9kZW1vL2NvbnRyYWN0LnB5OjExCiAgICAvLyBpZiBhIDwgYjoKICAgIGZyYW1lX2RpZyAtMgogICAgZnJhbWVfZGlnIC0xCiAgICA8CiAgICBieiBkaWZmZXJlbmNlX2Vsc2VfYm9keUAyCiAgICAvLyBzbWFydF9jb250cmFjdHMvZGVtby9jb250cmFjdC5weToxMgogICAgLy8gcmV0dXJuIGIgLSBhCiAgICBmcmFtZV9kaWcgLTEKICAgIGZyYW1lX2RpZyAtMgogICAgLQogICAgcmV0c3ViCgpkaWZmZXJlbmNlX2Vsc2VfYm9keUAyOgogICAgLy8gc21hcnRfY29udHJhY3RzL2RlbW8vY29udHJhY3QucHk6MTQKICAgIC8vIHJldHVybiBhIC0gYgogICAgZnJhbWVfZGlnIC0yCiAgICBmcmFtZV9kaWcgLTEKICAgIC0KICAgIHJldHN1Ygo=",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDEwCgpzbWFydF9jb250cmFjdHMuZGVtby5jb250cmFjdC5EZW1vLmNsZWFyX3N0YXRlX3Byb2dyYW06CiAgICAvLyBzbWFydF9jb250cmFjdHMvZGVtby9jb250cmFjdC5weTo0CiAgICAvLyBjbGFzcyBEZW1vKEFSQzRDb250cmFjdCk6CiAgICBpbnQgMQogICAgcmV0dXJuCg=="
   },
   "state": {
@@ -63,15 +68,35 @@ export const APP_SPEC: AppSpec = {
     "name": "Demo",
     "methods": [
       {
-        "name": "hello",
+        "name": "sum",
         "args": [
           {
-            "type": "string",
-            "name": "name"
+            "type": "uint64",
+            "name": "a"
+          },
+          {
+            "type": "uint64",
+            "name": "b"
           }
         ],
         "returns": {
-          "type": "string"
+          "type": "uint64"
+        }
+      },
+      {
+        "name": "difference",
+        "args": [
+          {
+            "type": "uint64",
+            "name": "a"
+          },
+          {
+            "type": "uint64",
+            "name": "b"
+          }
+        ],
+        "returns": {
+          "type": "uint64"
         }
       }
     ],
@@ -145,12 +170,21 @@ export type Demo = {
    * Maps method signatures / names to their argument and return types.
    */
   methods:
-    & Record<'hello(string)string' | 'hello', {
+    & Record<'sum(uint64,uint64)uint64' | 'sum', {
       argsObj: {
-        name: string
+        a: bigint | number
+        b: bigint | number
       }
-      argsTuple: [name: string]
-      returns: string
+      argsTuple: [a: bigint | number, b: bigint | number]
+      returns: bigint
+    }>
+    & Record<'difference(uint64,uint64)uint64' | 'difference', {
+      argsObj: {
+        a: bigint | number
+        b: bigint | number
+      }
+      argsTuple: [a: bigint | number, b: bigint | number]
+      returns: bigint
     }>
 }
 /**
@@ -224,16 +258,30 @@ export abstract class DemoCallFactory {
   }
 
   /**
-   * Constructs a no op call for the hello(string)string ABI method
+   * Constructs a no op call for the sum(uint64,uint64)uint64 ABI method
    *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static hello(args: MethodArgs<'hello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
-      method: 'hello(string)string' as const,
-      methodArgs: Array.isArray(args) ? args : [args.name],
+      method: 'sum(uint64,uint64)uint64' as const,
+      methodArgs: Array.isArray(args) ? args : [args.a, args.b],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the difference(uint64,uint64)uint64 ABI method
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'difference(uint64,uint64)uint64' as const,
+      methodArgs: Array.isArray(args) ? args : [args.a, args.b],
       ...params,
     }
   }
@@ -336,14 +384,25 @@ export class DemoClient {
   }
 
   /**
-   * Calls the hello(string)string ABI method.
+   * Calls the sum(uint64,uint64)uint64 ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
-  public hello(args: MethodArgs<'hello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(DemoCallFactory.hello(args, params))
+  public sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DemoCallFactory.sum(args, params))
+  }
+
+  /**
+   * Calls the difference(uint64,uint64)uint64 ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DemoCallFactory.difference(args, params))
   }
 
   public compose(): DemoComposer {
@@ -352,8 +411,13 @@ export class DemoClient {
     let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
-      hello(args: MethodArgs<'hello(string)string'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.hello(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+      sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.sum(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.difference(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
@@ -391,13 +455,22 @@ export class DemoClient {
 }
 export type DemoComposer<TReturns extends [...any[]] = []> = {
   /**
-   * Calls the hello(string)string ABI method.
+   * Calls the sum(uint64,uint64)uint64 ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  hello(args: MethodArgs<'hello(string)string'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoComposer<[...TReturns, MethodReturn<'hello(string)string'>]>
+  sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoComposer<[...TReturns, MethodReturn<'sum(uint64,uint64)uint64'>]>
+
+  /**
+   * Calls the difference(uint64,uint64)uint64 ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoComposer<[...TReturns, MethodReturn<'difference(uint64,uint64)uint64'>]>
 
   /**
    * Makes a clear_state call to an existing instance of the Demo smart contract.

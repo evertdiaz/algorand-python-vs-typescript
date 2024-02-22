@@ -3,12 +3,20 @@ import { Contract } from '@algorandfoundation/tealscript';
 // eslint-disable-next-line no-unused-vars
 class DemoTealscript extends Contract {
   /**
-   * Says Hello World
+   * Adds a and b
    *
-   * @param word
-   * @returns String "Hello, " plus the word value
+   * @param a
+   * @param b
+   * @returns Result of adding a and b
    */
-  sayHello(word: string): string {
-    return 'Hello, ' + word;
+  sum(a: number, b: number): number {
+    return a + b;
+  }
+
+  difference(a: number, b: number): number {
+    if (a < b) {
+      return b - a;
+    }
+    return a - b;
   }
 }

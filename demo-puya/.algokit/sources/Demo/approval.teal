@@ -4,13 +4,14 @@ smart_contracts.demo.contract.Demo.approval_program:
     // smart_contracts/demo/contract.py:4
     // class Demo(ARC4Contract):
     txn NumAppArgs
-    bz main_bare_routing@5
-    method "hello(string)string"
+    bz main_bare_routing@6
+    method "sum(uint64,uint64)uint64"
+    method "difference(uint64,uint64)uint64"
     txna ApplicationArgs 0
-    match main_hello_route@2
+    match main_sum_route@2 main_difference_route@3
     err // reject transaction
 
-main_hello_route@2:
+main_sum_route@2:
     // smart_contracts/demo/contract.py:5
     // @arc4.abimethod()
     txn OnCompletion
@@ -21,9 +22,13 @@ main_hello_route@2:
     // smart_contracts/demo/contract.py:4
     // class Demo(ARC4Contract):
     txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
     // smart_contracts/demo/contract.py:5
     // @arc4.abimethod()
-    callsub hello
+    callsub sum
+    itob
     byte 0x151f7c75
     swap
     concat
@@ -31,7 +36,32 @@ main_hello_route@2:
     int 1
     return
 
-main_bare_routing@5:
+main_difference_route@3:
+    // smart_contracts/demo/contract.py:9
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    // smart_contracts/demo/contract.py:4
+    // class Demo(ARC4Contract):
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // smart_contracts/demo/contract.py:9
+    // @arc4.abimethod()
+    callsub difference
+    itob
+    byte 0x151f7c75
+    swap
+    concat
+    log
+    int 1
+    return
+
+main_bare_routing@6:
     // smart_contracts/demo/contract.py:4
     // class Demo(ARC4Contract):
     txn OnCompletion
@@ -44,23 +74,43 @@ main_bare_routing@5:
     return
 
 
-// smart_contracts.demo.contract.Demo.hello(name: bytes) -> bytes:
-hello:
+// smart_contracts.demo.contract.Demo.sum(a: uint64, b: uint64) -> uint64:
+sum:
     // smart_contracts/demo/contract.py:5-6
     // @arc4.abimethod()
-    // def hello(self, name: arc4.String) -> arc4.String:
-    proto 1 1
+    // def sum(self, a: UInt64, b: UInt64) -> UInt64:
+    proto 2 1
     // smart_contracts/demo/contract.py:7
-    // return "Hello, " + name
+    // return a + b
+    frame_dig -2
     frame_dig -1
-    extract 2 0
-    byte "Hello, "
-    swap
-    concat
-    dup
-    len
-    itob
-    extract 6 0
-    swap
-    concat
+    +
+    retsub
+
+
+// smart_contracts.demo.contract.Demo.difference(a: uint64, b: uint64) -> uint64:
+difference:
+    // smart_contracts/demo/contract.py:9-10
+    // @arc4.abimethod()
+    // def difference(self, a: UInt64, b: UInt64) -> UInt64:
+    proto 2 1
+    // smart_contracts/demo/contract.py:11
+    // if a < b:
+    frame_dig -2
+    frame_dig -1
+    <
+    bz difference_else_body@2
+    // smart_contracts/demo/contract.py:12
+    // return b - a
+    frame_dig -1
+    frame_dig -2
+    -
+    retsub
+
+difference_else_body@2:
+    // smart_contracts/demo/contract.py:14
+    // return a - b
+    frame_dig -2
+    frame_dig -1
+    -
     retsub

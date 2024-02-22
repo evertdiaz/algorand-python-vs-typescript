@@ -30,22 +30,16 @@ describe('demo contract', () => {
     return { client }
   }
 
-  test('says hello', async () => {
+  test('sum and diff', async () => {
     const { algod, indexer, testAccount } = localnet.context
     const { client } = await deploy(testAccount, algod, indexer)
 
-    const result = await client.hello({ name: 'World' })
+    const sum = await client.sum({ a: 25, b: 29 })
 
-    expect(result.return).toBe('Hello, World')
-  })
+    expect(sum.return).toEqual(BigInt(54))
 
-  test('simulate says hello with correct budget consumed', async () => {
-    const { algod, indexer, testAccount } = localnet.context
-    const { client } = await deploy(testAccount, algod, indexer)
-    const result = await client.compose().hello({ name: 'World' }).hello({ name: 'Jane' }).simulate()
+    const diff = await client.difference({ a: 25, b: 29 })
 
-    expect(result.methodResults[0].returnValue).toBe('Hello, World')
-    expect(result.methodResults[1].returnValue).toBe('Hello, Jane')
-    expect(result.simulateResponse.txnGroups[0].appBudgetConsumed).toBeLessThan(100)
+    expect(diff.return).toEqual(BigInt(4))
   })
 })

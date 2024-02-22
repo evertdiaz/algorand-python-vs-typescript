@@ -29,7 +29,12 @@ import type { ABIResult, TransactionWithSigner } from 'algosdk'
 import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer, modelsv2 } from 'algosdk'
 export const APP_SPEC: AppSpec = {
   "hints": {
-    "sayHello(string)string": {
+    "sum(uint64,uint64)uint64": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "difference(uint64,uint64)uint64": {
       "call_config": {
         "no_op": "CALL"
       }
@@ -68,7 +73,7 @@ export const APP_SPEC: AppSpec = {
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjg2LjAKLy8gaHR0cHM6Ly9naXRodWIuY29tL2FsZ29yYW5kZm91bmRhdGlvbi9URUFMU2NyaXB0CgovLyBUaGlzIGNvbnRyYWN0IGlzIGNvbXBsaWFudCB3aXRoIGFuZC9vciBpbXBsZW1lbnRzIHRoZSBmb2xsb3dpbmcgQVJDczogWyBBUkM0IF0KCi8vIFRoZSBmb2xsb3dpbmcgdGVuIGxpbmVzIG9mIFRFQUwgaGFuZGxlIGluaXRpYWwgcHJvZ3JhbSBmbG93Ci8vIFRoaXMgcGF0dGVybiBpcyB1c2VkIHRvIG1ha2UgaXQgZWFzeSBmb3IgYW55b25lIHRvIHBhcnNlIHRoZSBzdGFydCBvZiB0aGUgcHJvZ3JhbSBhbmQgZGV0ZXJtaW5lIGlmIGEgc3BlY2lmaWMgYWN0aW9uIGlzIGFsbG93ZWQKLy8gSGVyZSwgYWN0aW9uIHJlZmVycyB0byB0aGUgT25Db21wbGV0ZSBpbiBjb21iaW5hdGlvbiB3aXRoIHdoZXRoZXIgdGhlIGFwcCBpcyBiZWluZyBjcmVhdGVkIG9yIGNhbGxlZAovLyBFdmVyeSBwb3NzaWJsZSBhY3Rpb24gZm9yIHRoaXMgY29udHJhY3QgaXMgcmVwcmVzZW50ZWQgaW4gdGhlIHN3aXRjaCBzdGF0ZW1lbnQKLy8gSWYgdGhlIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIGNvbnRyYWN0LCBpdHMgcmVzcGVjdGl2ZSBicmFuY2ggd2lsbCBiZSAiKk5PVF9JTVBMRU1FTlRFRCIgd2hpY2gganVzdCBjb250YWlucyAiZXJyIgp0eG4gQXBwbGljYXRpb25JRAohCmludCA2CioKdHhuIE9uQ29tcGxldGlvbgorCnN3aXRjaCAqY2FsbF9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJZXJyCgovLyBzYXlIZWxsbyhzdHJpbmcpc3RyaW5nCiphYmlfcm91dGVfc2F5SGVsbG86CgkvLyBUaGUgQUJJIHJldHVybiBwcmVmaXgKCWJ5dGUgMHgxNTFmN2M3NQoKCS8vIHdvcmQ6IHN0cmluZwoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQoJZXh0cmFjdCAyIDAKCgkvLyBleGVjdXRlIHNheUhlbGxvKHN0cmluZylzdHJpbmcKCWNhbGxzdWIgc2F5SGVsbG8KCWR1cAoJbGVuCglpdG9iCglleHRyYWN0IDYgMgoJc3dhcAoJY29uY2F0Cgljb25jYXQKCWxvZwoJaW50IDEKCXJldHVybgoKLy8gc2F5SGVsbG8od29yZDogc3RyaW5nKTogc3RyaW5nCi8vCi8vIFNheXMgSGVsbG8gV29ybGQKLy8KLy8gQHBhcmFtIHdvcmQKLy8gQHJldHVybnMgU3RyaW5nICJIZWxsbywgIiBwbHVzIHRoZSB3b3JkIHZhbHVlCnNheUhlbGxvOgoJcHJvdG8gMSAxCgoJLy8gY29udHJhY3RzL2RlbW8tdGVhbHNjcmlwdC5hbGdvLnRzOjEyCgkvLyByZXR1cm4gJ0hlbGxvLCAnICsgd29yZDsKCWJ5dGUgMHg0ODY1NmM2YzZmMmMyMCAvLyAiSGVsbG8sICIKCWZyYW1lX2RpZyAtMSAvLyB3b3JkOiBzdHJpbmcKCWNvbmNhdAoJcmV0c3ViCgoqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uOgoJaW50IDEKCXJldHVybgoKKmNyZWF0ZV9Ob09wOgoJbWV0aG9kICJjcmVhdGVBcHBsaWNhdGlvbigpdm9pZCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb24KCWVycgoKKmNhbGxfTm9PcDoKCW1ldGhvZCAic2F5SGVsbG8oc3RyaW5nKXN0cmluZyIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfc2F5SGVsbG8KCWVycg==",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjg2LjAKLy8gaHR0cHM6Ly9naXRodWIuY29tL2FsZ29yYW5kZm91bmRhdGlvbi9URUFMU2NyaXB0CgovLyBUaGlzIGNvbnRyYWN0IGlzIGNvbXBsaWFudCB3aXRoIGFuZC9vciBpbXBsZW1lbnRzIHRoZSBmb2xsb3dpbmcgQVJDczogWyBBUkM0IF0KCi8vIFRoZSBmb2xsb3dpbmcgdGVuIGxpbmVzIG9mIFRFQUwgaGFuZGxlIGluaXRpYWwgcHJvZ3JhbSBmbG93Ci8vIFRoaXMgcGF0dGVybiBpcyB1c2VkIHRvIG1ha2UgaXQgZWFzeSBmb3IgYW55b25lIHRvIHBhcnNlIHRoZSBzdGFydCBvZiB0aGUgcHJvZ3JhbSBhbmQgZGV0ZXJtaW5lIGlmIGEgc3BlY2lmaWMgYWN0aW9uIGlzIGFsbG93ZWQKLy8gSGVyZSwgYWN0aW9uIHJlZmVycyB0byB0aGUgT25Db21wbGV0ZSBpbiBjb21iaW5hdGlvbiB3aXRoIHdoZXRoZXIgdGhlIGFwcCBpcyBiZWluZyBjcmVhdGVkIG9yIGNhbGxlZAovLyBFdmVyeSBwb3NzaWJsZSBhY3Rpb24gZm9yIHRoaXMgY29udHJhY3QgaXMgcmVwcmVzZW50ZWQgaW4gdGhlIHN3aXRjaCBzdGF0ZW1lbnQKLy8gSWYgdGhlIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIGNvbnRyYWN0LCBpdHMgcmVzcGVjdGl2ZSBicmFuY2ggd2lsbCBiZSAiKk5PVF9JTVBMRU1FTlRFRCIgd2hpY2gganVzdCBjb250YWlucyAiZXJyIgp0eG4gQXBwbGljYXRpb25JRAohCmludCA2CioKdHhuIE9uQ29tcGxldGlvbgorCnN3aXRjaCAqY2FsbF9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJZXJyCgovLyBzdW0odWludDY0LHVpbnQ2NCl1aW50NjQKKmFiaV9yb3V0ZV9zdW06CgkvLyBUaGUgQUJJIHJldHVybiBwcmVmaXgKCWJ5dGUgMHgxNTFmN2M3NQoKCS8vIGI6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgoJYnRvaQoKCS8vIGE6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQoJYnRvaQoKCS8vIGV4ZWN1dGUgc3VtKHVpbnQ2NCx1aW50NjQpdWludDY0CgljYWxsc3ViIHN1bQoJaXRvYgoJY29uY2F0Cglsb2cKCWludCAxCglyZXR1cm4KCi8vIHN1bShhOiBudW1iZXIsIGI6IG51bWJlcik6IG51bWJlcgovLwovLyBBZGRzIGEgYW5kIGIKLy8KLy8gQHBhcmFtIGEKLy8gQHBhcmFtIGIKLy8gQHJldHVybnMgUmVzdWx0IG9mIGFkZGluZyBhIGFuZCBiCnN1bToKCXByb3RvIDIgMQoKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czoxMwoJLy8gcmV0dXJuIGEgKyBiOwoJZnJhbWVfZGlnIC0xIC8vIGE6IG51bWJlcgoJZnJhbWVfZGlnIC0yIC8vIGI6IG51bWJlcgoJKwoJcmV0c3ViCgovLyBkaWZmZXJlbmNlKHVpbnQ2NCx1aW50NjQpdWludDY0CiphYmlfcm91dGVfZGlmZmVyZW5jZToKCS8vIFRoZSBBQkkgcmV0dXJuIHByZWZpeAoJYnl0ZSAweDE1MWY3Yzc1CgoJLy8gYjogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAyCglidG9pCgoJLy8gYTogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglidG9pCgoJLy8gZXhlY3V0ZSBkaWZmZXJlbmNlKHVpbnQ2NCx1aW50NjQpdWludDY0CgljYWxsc3ViIGRpZmZlcmVuY2UKCWl0b2IKCWNvbmNhdAoJbG9nCglpbnQgMQoJcmV0dXJuCgovLyBkaWZmZXJlbmNlKGE6IG51bWJlciwgYjogbnVtYmVyKTogbnVtYmVyCmRpZmZlcmVuY2U6Cglwcm90byAyIDEKCgkvLyAqaWYwX2NvbmRpdGlvbgoJLy8gY29udHJhY3RzL2RlbW8tdGVhbHNjcmlwdC5hbGdvLnRzOjE3CgkvLyBhIDwgYgoJZnJhbWVfZGlnIC0xIC8vIGE6IG51bWJlcgoJZnJhbWVfZGlnIC0yIC8vIGI6IG51bWJlcgoJPAoJYnogKmlmMF9lbmQKCgkvLyAqaWYwX2NvbnNlcXVlbnQKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czoxOAoJLy8gcmV0dXJuIGIgLSBhOwoJZnJhbWVfZGlnIC0yIC8vIGI6IG51bWJlcgoJZnJhbWVfZGlnIC0xIC8vIGE6IG51bWJlcgoJLQoJcmV0c3ViCgoqaWYwX2VuZDoKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czoyMAoJLy8gcmV0dXJuIGEgLSBiOwoJZnJhbWVfZGlnIC0xIC8vIGE6IG51bWJlcgoJZnJhbWVfZGlnIC0yIC8vIGI6IG51bWJlcgoJLQoJcmV0c3ViCgoqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uOgoJaW50IDEKCXJldHVybgoKKmNyZWF0ZV9Ob09wOgoJbWV0aG9kICJjcmVhdGVBcHBsaWNhdGlvbigpdm9pZCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb24KCWVycgoKKmNhbGxfTm9PcDoKCW1ldGhvZCAic3VtKHVpbnQ2NCx1aW50NjQpdWludDY0IgoJbWV0aG9kICJkaWZmZXJlbmNlKHVpbnQ2NCx1aW50NjQpdWludDY0IgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9zdW0gKmFiaV9yb3V0ZV9kaWZmZXJlbmNlCgllcnI=",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDEw"
   },
   "contract": {
@@ -76,17 +81,37 @@ export const APP_SPEC: AppSpec = {
     "desc": "",
     "methods": [
       {
-        "name": "sayHello",
-        "desc": "Says Hello World",
+        "name": "sum",
+        "desc": "Adds a and b",
         "args": [
           {
-            "name": "word",
-            "type": "string"
+            "name": "a",
+            "type": "uint64"
+          },
+          {
+            "name": "b",
+            "type": "uint64"
           }
         ],
         "returns": {
-          "type": "string",
-          "desc": "String \"Hello, \" plus the word value"
+          "type": "uint64",
+          "desc": "Result of adding a and b"
+        }
+      },
+      {
+        "name": "difference",
+        "args": [
+          {
+            "name": "a",
+            "type": "uint64"
+          },
+          {
+            "name": "b",
+            "type": "uint64"
+          }
+        ],
+        "returns": {
+          "type": "uint64"
         }
       },
       {
@@ -163,15 +188,24 @@ export type DemoTealscript = {
    * Maps method signatures / names to their argument and return types.
    */
   methods:
-    & Record<'sayHello(string)string' | 'sayHello', {
+    & Record<'sum(uint64,uint64)uint64' | 'sum', {
       argsObj: {
-        word: string
+        a: bigint | number
+        b: bigint | number
       }
-      argsTuple: [word: string]
+      argsTuple: [a: bigint | number, b: bigint | number]
       /**
-       * String "Hello, " plus the word value
+       * Result of adding a and b
        */
-      returns: string
+      returns: bigint
+    }>
+    & Record<'difference(uint64,uint64)uint64' | 'difference', {
+      argsObj: {
+        a: bigint | number
+        b: bigint | number
+      }
+      argsTuple: [a: bigint | number, b: bigint | number]
+      returns: bigint
     }>
     & Record<'createApplication()void' | 'createApplication', {
       argsObj: {
@@ -252,18 +286,32 @@ export abstract class DemoTealscriptCallFactory {
   }
 
   /**
-   * Constructs a no op call for the sayHello(string)string ABI method
+   * Constructs a no op call for the sum(uint64,uint64)uint64 ABI method
    *
-   * Says Hello World
+   * Adds a and b
    *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static sayHello(args: MethodArgs<'sayHello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
-      method: 'sayHello(string)string' as const,
-      methodArgs: Array.isArray(args) ? args : [args.word],
+      method: 'sum(uint64,uint64)uint64' as const,
+      methodArgs: Array.isArray(args) ? args : [args.a, args.b],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the difference(uint64,uint64)uint64 ABI method
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'difference(uint64,uint64)uint64' as const,
+      methodArgs: Array.isArray(args) ? args : [args.a, args.b],
       ...params,
     }
   }
@@ -367,16 +415,27 @@ export class DemoTealscriptClient {
   }
 
   /**
-   * Calls the sayHello(string)string ABI method.
+   * Calls the sum(uint64,uint64)uint64 ABI method.
    *
-   * Says Hello World
+   * Adds a and b
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
-   * @returns The result of the call: String "Hello, " plus the word value
+   * @returns The result of the call: Result of adding a and b
    */
-  public sayHello(args: MethodArgs<'sayHello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(DemoTealscriptCallFactory.sayHello(args, params))
+  public sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DemoTealscriptCallFactory.sum(args, params))
+  }
+
+  /**
+   * Calls the difference(uint64,uint64)uint64 ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DemoTealscriptCallFactory.difference(args, params))
   }
 
   public compose(): DemoTealscriptComposer {
@@ -385,8 +444,13 @@ export class DemoTealscriptClient {
     let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
-      sayHello(args: MethodArgs<'sayHello(string)string'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.sayHello(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+      sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.sum(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.difference(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
@@ -424,15 +488,24 @@ export class DemoTealscriptClient {
 }
 export type DemoTealscriptComposer<TReturns extends [...any[]] = []> = {
   /**
-   * Calls the sayHello(string)string ABI method.
+   * Calls the sum(uint64,uint64)uint64 ABI method.
    *
-   * Says Hello World
+   * Adds a and b
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  sayHello(args: MethodArgs<'sayHello(string)string'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'sayHello(string)string'>]>
+  sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'sum(uint64,uint64)uint64'>]>
+
+  /**
+   * Calls the difference(uint64,uint64)uint64 ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'difference(uint64,uint64)uint64'>]>
 
   /**
    * Makes a clear_state call to an existing instance of the DemoTealscript smart contract.
