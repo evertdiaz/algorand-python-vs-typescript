@@ -21,136 +21,42 @@ switch *call_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEM
 *NOT_IMPLEMENTED:
 	err
 
-// getSum(a: number, b: number): number
-//
-// Calculates the sum of two numbers
-//
-// @param a
-// @param b
-// @returns The sum of a and b
-getSum:
-	proto 2 1
-
-	// contracts/demo-tealscript.algo.ts:13
-	// return a + b;
-	frame_dig -1 // a: number
-	frame_dig -2 // b: number
-	+
-	retsub
-
-// getDifference(a: number, b: number): number
-//
-// Calculates the difference between two numbers
-//
-// @param a
-// @param b
-// @returns The difference between a and b.
-getDifference:
-	proto 2 1
-
-	// contracts/demo-tealscript.algo.ts:24
-	// return a >= b ? a - b : b - a;
-	frame_dig -1 // a: number
-	frame_dig -2 // b: number
-	>=
-	bz *ternary0_false
-	frame_dig -1 // a: number
-	frame_dig -2 // b: number
-	-
-	b *ternary0_end
-
-*ternary0_false:
-	frame_dig -2 // b: number
-	frame_dig -1 // a: number
-	-
-
-*ternary0_end:
-	retsub
-
-// doMath(uint64,uint64,string)uint64
-*abi_route_doMath:
+// sayHello(string)string
+*abi_route_sayHello:
 	// The ABI return prefix
 	byte 0x151f7c75
 
-	// operation: string
-	txna ApplicationArgs 3
+	// word: string
+	txna ApplicationArgs 1
 	extract 2 0
 
-	// b: uint64
-	txna ApplicationArgs 2
-	btoi
-
-	// a: uint64
-	txna ApplicationArgs 1
-	btoi
-
-	// execute doMath(uint64,uint64,string)uint64
-	callsub doMath
+	// execute sayHello(string)string
+	callsub sayHello
+	dup
+	len
 	itob
+	extract 6 2
+	swap
+	concat
 	concat
 	log
 	int 1
 	return
 
-// doMath(a: number, b: number, operation: string): number
+// sayHello(word: string): string
 //
-// A method that takes two numbers and does either addition or subtraction
+// Says Hello World
 //
-// @param a The first number
-// @param b The second number
-// @param operation The operation to perform. Can be either 'sum' or 'difference'
-//
-// @returns The result of the operation
-doMath:
-	proto 3 1
+// @param word
+// @returns String "Hello, " plus the word value
+sayHello:
+	proto 1 1
 
-	// Push empty bytes after the frame pointer to reserve space for local variables
-	byte 0x
-
-	// *if0_condition
-	// contracts/demo-tealscript.algo.ts:39
-	// operation === 'sum'
-	frame_dig -3 // operation: string
-	byte 0x73756d // "sum"
-	==
-	bz *if0_elseif1_condition
-
-	// *if0_consequent
-	// contracts/demo-tealscript.algo.ts:40
-	// result = this.getSum(a, b)
-	frame_dig -2 // b: number
-	frame_dig -1 // a: number
-	callsub getSum
-	frame_bury 0 // result: number
-	b *if0_end
-
-*if0_elseif1_condition:
-	// contracts/demo-tealscript.algo.ts:41
-	// operation === 'difference'
-	frame_dig -3 // operation: string
-	byte 0x646966666572656e6365 // "difference"
-	==
-	bz *if0_else
-
-	// *if0_elseif1_consequent
-	// contracts/demo-tealscript.algo.ts:42
-	// result = this.getDifference(a, b)
-	frame_dig -2 // b: number
-	frame_dig -1 // a: number
-	callsub getDifference
-	frame_bury 0 // result: number
-	b *if0_end
-
-*if0_else:
-	err // 'Invalid operation'
-
-*if0_end:
-	// contracts/demo-tealscript.algo.ts:45
-	// return result;
-	frame_dig 0 // result: number
-
-	// set the subroutine return value
-	frame_bury 0
+	// contracts/demo-tealscript.algo.ts:12
+	// return 'Hello, ' + word;
+	byte 0x48656c6c6f2c20 // "Hello, "
+	frame_dig -1 // word: string
+	concat
 	retsub
 
 *abi_route_createApplication:
@@ -164,7 +70,7 @@ doMath:
 	err
 
 *call_NoOp:
-	method "doMath(uint64,uint64,string)uint64"
+	method "sayHello(string)string"
 	txna ApplicationArgs 0
-	match *abi_route_doMath
+	match *abi_route_sayHello
 	err

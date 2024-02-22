@@ -3,28 +3,17 @@
   "desc": "",
   "methods": [
     {
-      "name": "doMath",
-      "desc": "A method that takes two numbers and does either addition or subtraction",
+      "name": "sayHello",
+      "desc": "Says Hello World",
       "args": [
         {
-          "name": "a",
-          "type": "uint64",
-          "desc": "The first number"
-        },
-        {
-          "name": "b",
-          "type": "uint64",
-          "desc": "The second number"
-        },
-        {
-          "name": "operation",
-          "type": "string",
-          "desc": "The operation to perform. Can be either 'sum' or 'difference'"
+          "name": "word",
+          "type": "string"
         }
       ],
       "returns": {
-        "type": "uint64",
-        "desc": "The result of the operation"
+        "type": "string",
+        "desc": "String \"Hello, \" plus the word value"
       }
     },
     {
