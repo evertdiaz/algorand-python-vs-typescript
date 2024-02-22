@@ -1,0 +1,7 @@
+#pragma version 10
+
+smart_contracts.demo.contract.Demo.clear_state_program:
+    // smart_contracts/demo/contract.py:4
+    // class Demo(ARC4Contract):
+    int 1
+    return
