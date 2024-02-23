@@ -33,6 +33,34 @@
       }
     },
     {
+      "name": "optInToApplication",
+      "args": [],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "registerEmployee",
+      "desc": "Register An individual name",
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "getEmployeeName",
+      "desc": "Retrieves the registered name",
+      "args": [],
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
       "name": "createApplication",
       "args": [],
       "returns": {

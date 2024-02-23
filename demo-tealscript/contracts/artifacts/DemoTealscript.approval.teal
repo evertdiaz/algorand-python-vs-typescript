@@ -16,7 +16,7 @@ int 6
 *
 txn OnCompletion
 +
-switch *call_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *create_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED
+switch *call_NoOp *call_OptIn *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *create_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED
 
 *NOT_IMPLEMENTED:
 	err
@@ -40,7 +40,7 @@ switch *call_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEM
 register:
 	proto 1 0
 
-	// contracts/demo-tealscript.algo.ts:13
+	// contracts/demo-tealscript.algo.ts:15
 	// this.companyName.value = name
 	byte 0x636f6d70616e794e616d65 // "companyName"
 	frame_dig -1 // name: string
@@ -80,7 +80,7 @@ register:
 getName:
 	proto 0 1
 
-	// contracts/demo-tealscript.algo.ts:23
+	// contracts/demo-tealscript.algo.ts:25
 	// return this.companyName.value;
 	byte 0x636f6d70616e794e616d65 // "companyName"
 	app_global_get
@@ -111,7 +111,7 @@ createAsa:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// contracts/demo-tealscript.algo.ts:33
+	// contracts/demo-tealscript.algo.ts:34
 	// registeredAsa = sendAssetCreation({
 	//       configAssetTotal: 1,
 	//       configAssetDecimals: 0,
@@ -124,34 +124,34 @@ createAsa:
 	int acfg
 	itxn_field TypeEnum
 
-	// contracts/demo-tealscript.algo.ts:34
+	// contracts/demo-tealscript.algo.ts:35
 	// configAssetTotal: 1
 	int 1
 	itxn_field ConfigAssetTotal
 
-	// contracts/demo-tealscript.algo.ts:35
+	// contracts/demo-tealscript.algo.ts:36
 	// configAssetDecimals: 0
 	int 0
 	itxn_field ConfigAssetDecimals
 
-	// contracts/demo-tealscript.algo.ts:36
+	// contracts/demo-tealscript.algo.ts:37
 	// configAssetDefaultFrozen: 0
 	int 0
 	itxn_field ConfigAssetDefaultFrozen
 
-	// contracts/demo-tealscript.algo.ts:37
+	// contracts/demo-tealscript.algo.ts:38
 	// configAssetName: this.companyName.value
 	byte 0x636f6d70616e794e616d65 // "companyName"
 	app_global_get
 	extract 2 0
 	itxn_field ConfigAssetName
 
-	// contracts/demo-tealscript.algo.ts:38
+	// contracts/demo-tealscript.algo.ts:39
 	// configAssetUnitName: 'TKN'
 	byte 0x544b4e // "TKN"
 	itxn_field ConfigAssetUnitName
 
-	// contracts/demo-tealscript.algo.ts:39
+	// contracts/demo-tealscript.algo.ts:40
 	// fee: 0
 	int 0
 	itxn_field Fee
@@ -161,12 +161,92 @@ createAsa:
 	itxn CreatedAssetID
 	frame_bury 0 // registeredAsa: uint64
 
-	// contracts/demo-tealscript.algo.ts:41
+	// contracts/demo-tealscript.algo.ts:42
 	// return registeredAsa.id;
 	frame_dig 0 // registeredAsa: uint64
 
 	// set the subroutine return value
 	frame_bury 0
+	retsub
+
+// optInToApplication()void
+*abi_route_optInToApplication:
+	// execute optInToApplication()void
+	callsub optInToApplication
+	int 1
+	return
+
+// optInToApplication(): void
+optInToApplication:
+	proto 0 0
+	retsub
+
+// registerEmployee(string)void
+*abi_route_registerEmployee:
+	// name: string
+	txna ApplicationArgs 1
+	extract 2 0
+
+	// execute registerEmployee(string)void
+	callsub registerEmployee
+	int 1
+	return
+
+// registerEmployee(name: string): void
+//
+// Register An individual name
+//
+// @param name
+registerEmployee:
+	proto 1 0
+
+	// contracts/demo-tealscript.algo.ts:53
+	// this.employeeName(this.txn.sender).value = name
+	txn Sender
+	byte 0x656d706c6f7965654e616d65 // "employeeName"
+	frame_dig -1 // name: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	app_local_put
+	retsub
+
+// getEmployeeName()string
+*abi_route_getEmployeeName:
+	// The ABI return prefix
+	byte 0x151f7c75
+
+	// execute getEmployeeName()string
+	callsub getEmployeeName
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	concat
+	log
+	int 1
+	return
+
+// getEmployeeName(): string
+//
+// Retrieves the registered name
+//
+// @param name
+// @returns Name of the employee
+getEmployeeName:
+	proto 0 1
+
+	// contracts/demo-tealscript.algo.ts:63
+	// return this.employeeName(this.txn.sender).value;
+	txn Sender
+	byte 0x656d706c6f7965654e616d65 // "employeeName"
+	app_local_get
+	extract 2 0
 	retsub
 
 *abi_route_createApplication:
@@ -183,6 +263,14 @@ createAsa:
 	method "register(string)void"
 	method "getName()string"
 	method "createAsa()uint64"
+	method "registerEmployee(string)void"
+	method "getEmployeeName()string"
 	txna ApplicationArgs 0
-	match *abi_route_register *abi_route_getName *abi_route_createAsa
+	match *abi_route_register *abi_route_getName *abi_route_createAsa *abi_route_registerEmployee *abi_route_getEmployeeName
+	err
+
+*call_OptIn:
+	method "optInToApplication()void"
+	txna ApplicationArgs 0
+	match *abi_route_optInToApplication
 	err

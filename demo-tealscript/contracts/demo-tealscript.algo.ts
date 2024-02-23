@@ -4,6 +4,8 @@ import { Contract } from '@algorandfoundation/tealscript';
 class DemoTealscript extends Contract {
   companyName = GlobalStateKey<string>();
 
+  employeeName = LocalStateKey<string>();
+
   /**
    * Register the name of the company
    *
@@ -28,7 +30,6 @@ class DemoTealscript extends Contract {
    *
    * @returns ID of the created ASA
    */
-
   createAsa(): number {
     const registeredAsa = sendAssetCreation({
       configAssetTotal: 1,
@@ -39,5 +40,26 @@ class DemoTealscript extends Contract {
       fee: 0,
     });
     return registeredAsa.id;
+  }
+
+  optInToApplication(): void {}
+
+  /**
+   * Register An individual name
+   *
+   * @param name
+   */
+  registerEmployee(name: string): void {
+    this.employeeName(this.txn.sender).value = name;
+  }
+
+  /**
+   * Retrieves the registered name
+   *
+   * @param name
+   * @returns Name of the employee
+   */
+  getEmployeeName(): string {
+    return this.employeeName(this.txn.sender).value;
   }
 }

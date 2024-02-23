@@ -44,5 +44,11 @@ describe('DemoTealscript', () => {
     );
 
     expect(asaresult.return).toBeGreaterThan(0);
+
+    await appClient.optIn.optInToApplication({});
+    const employee = 'John Doe';
+    await appClient.registerEmployee({ name: employee });
+    const localresult = await appClient.getEmployeeName({});
+    expect(localresult.return?.valueOf()).toBe(employee);
   });
 });

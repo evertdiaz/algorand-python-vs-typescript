@@ -50,5 +50,11 @@ describe('demo contract', () => {
     )
 
     expect(asaresult.return).toBeGreaterThan(0)
+
+    await client.optIn.optIn({})
+    const employee = 'John Doe'
+    await client.registerEmployee({ name: employee })
+    const localresult = await client.getEmployeeName({})
+    expect(localresult.return?.valueOf()).toBe(employee)
   })
 })
