@@ -22,4 +22,22 @@ class DemoTealscript extends Contract {
   getName(): string {
     return this.companyName.value;
   }
+
+  /**
+   * Retrieves the registered name
+   *
+   * @returns ID of the created ASA
+   */
+
+  createAsa(): number {
+    const registeredAsa = sendAssetCreation({
+      configAssetTotal: 1,
+      configAssetDecimals: 0,
+      configAssetDefaultFrozen: 0,
+      configAssetName: this.companyName.value,
+      configAssetUnitName: 'TKN',
+      fee: 0,
+    });
+    return registeredAsa.id;
+  }
 }

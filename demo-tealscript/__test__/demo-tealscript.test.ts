@@ -27,10 +27,22 @@ describe('DemoTealscript', () => {
     await appClient.create.createApplication({});
   });
 
-  test('register', async () => {
+  test('register and create asa', async () => {
     const name = 'Champions Corp';
     await appClient.register({ name });
     const result = await appClient.getName({});
     expect(result.return?.valueOf()).toBe(name);
+
+    await appClient.appClient.fundAppAccount(algokit.microAlgos(200_000));
+    const asaresult = await appClient.createAsa(
+      {},
+      {
+        sendParams: {
+          fee: algokit.microAlgos(2_000),
+        },
+      }
+    );
+
+    expect(asaresult.return).toBeGreaterThan(0);
   });
 });

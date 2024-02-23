@@ -9,11 +9,12 @@ main_entrypoint@2:
     // smart_contracts/demo/contract.py:4
     // class Demo(ARC4Contract):
     txn NumAppArgs
-    bz main_bare_routing@8
+    bz main_bare_routing@9
     method "register(string)void"
     method "get_name()string"
+    method "create_asa()uint64"
     txna ApplicationArgs 0
-    match main_register_route@4 main_get_name_route@5
+    match main_register_route@4 main_get_name_route@5 main_create_asa_route@6
     err // reject transaction
 
 main_register_route@4:
@@ -49,7 +50,23 @@ main_get_name_route@5:
     int 1
     return
 
-main_bare_routing@8:
+main_create_asa_route@6:
+    // smart_contracts/demo/contract.py:17
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    callsub create_asa
+    byte 0x151f7c75
+    swap
+    concat
+    log
+    int 1
+    return
+
+main_bare_routing@9:
     // smart_contracts/demo/contract.py:4
     // class Demo(ARC4Contract):
     txn OnCompletion
@@ -96,6 +113,103 @@ get_name:
     extract 6 2
     swap
     concat
+    retsub
+
+
+// smart_contracts.demo.contract.Demo.create_asa() -> bytes:
+create_asa:
+    // smart_contracts/demo/contract.py:17-18
+    // @arc4.abimethod()
+    // def create_asa(self) -> arc4.UInt64:
+    proto 0 1
+    // smart_contracts/demo/contract.py:20-28
+    // itxn.AssetConfig(
+    //     total=1,
+    //     decimals=0,
+    //     default_frozen=False,
+    //     asset_name=self.company_name,
+    //     unit_name=b"TKN",
+    //     fee=0,
+    // )
+    // .submit()
+    itxn_begin
+    // smart_contracts/demo/contract.py:24
+    // asset_name=self.company_name,
+    int 0
+    byte "company_name"
+    app_global_get_ex
+    assert // check value exists
+    // smart_contracts/demo/contract.py:25
+    // unit_name=b"TKN",
+    byte "TKN"
+    itxn_field ConfigAssetUnitName
+    // smart_contracts/demo/contract.py:20
+    // itxn.AssetConfig(
+    int acfg
+    itxn_field TypeEnum
+    // smart_contracts/demo/contract.py:21
+    // total=1,
+    int 1
+    itxn_field ConfigAssetTotal
+    // smart_contracts/demo/contract.py:26
+    // fee=0,
+    int 0
+    itxn_field Fee
+    // smart_contracts/demo/contract.py:23
+    // default_frozen=False,
+    int 0
+    itxn_field ConfigAssetDefaultFrozen
+    // smart_contracts/demo/contract.py:22
+    // decimals=0,
+    int 0
+    itxn_field ConfigAssetDecimals
+    itxn_field ConfigAssetName
+    // smart_contracts/demo/contract.py:20-28
+    // itxn.AssetConfig(
+    //     total=1,
+    //     decimals=0,
+    //     default_frozen=False,
+    //     asset_name=self.company_name,
+    //     unit_name=b"TKN",
+    //     fee=0,
+    // )
+    // .submit()
+    itxn_submit
+    // smart_contracts/demo/contract.py:19
+    // self.created_asset_id = (
+    byte "created_asset_id"
+    // smart_contracts/demo/contract.py:20-28
+    // itxn.AssetConfig(
+    //     total=1,
+    //     decimals=0,
+    //     default_frozen=False,
+    //     asset_name=self.company_name,
+    //     unit_name=b"TKN",
+    //     fee=0,
+    // )
+    // .submit()
+    itxn CreatedAssetID
+    // smart_contracts/demo/contract.py:19-30
+    // self.created_asset_id = (
+    //     itxn.AssetConfig(
+    //         total=1,
+    //         decimals=0,
+    //         default_frozen=False,
+    //         asset_name=self.company_name,
+    //         unit_name=b"TKN",
+    //         fee=0,
+    //     )
+    //     .submit()
+    //     .created_asset.asset_id
+    // )
+    app_global_put
+    // smart_contracts/demo/contract.py:31
+    // return arc4.UInt64(self.created_asset_id)
+    int 0
+    byte "created_asset_id"
+    app_global_get_ex
+    assert // check value exists
+    itob
     retsub
 
 

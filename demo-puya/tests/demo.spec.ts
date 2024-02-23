@@ -30,16 +30,25 @@ describe('demo contract', () => {
     return { client }
   }
 
-  test('register', async () => {
+  test('register and create asa', async () => {
     const { algod, indexer, testAccount } = localnet.context
     const { client } = await deploy(testAccount, algod, indexer)
 
     const name = 'Champions Corp'
-
     await client.register({ name })
-
     const result = await client.getName({})
-
     expect(result.return?.valueOf()).toBe(name)
+
+    await client.appClient.fundAppAccount(algokit.microAlgos(200_000))
+    const asaresult = await client.createAsa(
+      {},
+      {
+        sendParams: {
+          fee: algokit.microAlgos(2_000),
+        },
+      },
+    )
+
+    expect(asaresult.return).toBeGreaterThan(0)
   })
 })

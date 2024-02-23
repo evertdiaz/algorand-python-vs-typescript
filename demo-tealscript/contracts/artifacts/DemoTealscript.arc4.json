@@ -4,7 +4,7 @@
   "methods": [
     {
       "name": "register",
-      "desc": "Adds a and b",
+      "desc": "Register the name of the company",
       "args": [
         {
           "name": "name",
@@ -17,9 +17,19 @@
     },
     {
       "name": "getName",
+      "desc": "Retrieves the registered name",
       "args": [],
       "returns": {
         "type": "string"
+      }
+    },
+    {
+      "name": "createAsa",
+      "desc": "Retrieves the registered name",
+      "args": [],
+      "returns": {
+        "type": "uint64",
+        "desc": "ID of the created ASA"
       }
     },
     {

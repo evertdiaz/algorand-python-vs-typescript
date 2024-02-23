@@ -39,6 +39,11 @@ export const APP_SPEC: AppSpec = {
         "no_op": "CALL"
       }
     },
+    "createAsa()uint64": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
     "createApplication()void": {
       "call_config": {
         "no_op": "CREATE"
@@ -78,7 +83,7 @@ export const APP_SPEC: AppSpec = {
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjg2LjAKLy8gaHR0cHM6Ly9naXRodWIuY29tL2FsZ29yYW5kZm91bmRhdGlvbi9URUFMU2NyaXB0CgovLyBUaGlzIGNvbnRyYWN0IGlzIGNvbXBsaWFudCB3aXRoIGFuZC9vciBpbXBsZW1lbnRzIHRoZSBmb2xsb3dpbmcgQVJDczogWyBBUkM0IF0KCi8vIFRoZSBmb2xsb3dpbmcgdGVuIGxpbmVzIG9mIFRFQUwgaGFuZGxlIGluaXRpYWwgcHJvZ3JhbSBmbG93Ci8vIFRoaXMgcGF0dGVybiBpcyB1c2VkIHRvIG1ha2UgaXQgZWFzeSBmb3IgYW55b25lIHRvIHBhcnNlIHRoZSBzdGFydCBvZiB0aGUgcHJvZ3JhbSBhbmQgZGV0ZXJtaW5lIGlmIGEgc3BlY2lmaWMgYWN0aW9uIGlzIGFsbG93ZWQKLy8gSGVyZSwgYWN0aW9uIHJlZmVycyB0byB0aGUgT25Db21wbGV0ZSBpbiBjb21iaW5hdGlvbiB3aXRoIHdoZXRoZXIgdGhlIGFwcCBpcyBiZWluZyBjcmVhdGVkIG9yIGNhbGxlZAovLyBFdmVyeSBwb3NzaWJsZSBhY3Rpb24gZm9yIHRoaXMgY29udHJhY3QgaXMgcmVwcmVzZW50ZWQgaW4gdGhlIHN3aXRjaCBzdGF0ZW1lbnQKLy8gSWYgdGhlIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIGNvbnRyYWN0LCBpdHMgcmVzcGVjdGl2ZSBicmFuY2ggd2lsbCBiZSAiKk5PVF9JTVBMRU1FTlRFRCIgd2hpY2gganVzdCBjb250YWlucyAiZXJyIgp0eG4gQXBwbGljYXRpb25JRAohCmludCA2CioKdHhuIE9uQ29tcGxldGlvbgorCnN3aXRjaCAqY2FsbF9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJZXJyCgovLyByZWdpc3RlcihzdHJpbmcpdm9pZAoqYWJpX3JvdXRlX3JlZ2lzdGVyOgoJLy8gbmFtZTogc3RyaW5nCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglleHRyYWN0IDIgMAoKCS8vIGV4ZWN1dGUgcmVnaXN0ZXIoc3RyaW5nKXZvaWQKCWNhbGxzdWIgcmVnaXN0ZXIKCWludCAxCglyZXR1cm4KCi8vIHJlZ2lzdGVyKG5hbWU6IHN0cmluZyk6IHZvaWQKLy8KLy8gQWRkcyBhIGFuZCBiCi8vCi8vIEBwYXJhbSBhCi8vIEByZXR1cm5zIFJlc3VsdCBvZiBhZGRpbmcgYSBhbmQgYgpyZWdpc3RlcjoKCXByb3RvIDEgMAoKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czoxNAoJLy8gdGhpcy5jb21wYW55TmFtZS52YWx1ZSA9IG5hbWUKCWJ5dGUgMHg2MzZmNmQ3MDYxNmU3OTRlNjE2ZDY1IC8vICJjb21wYW55TmFtZSIKCWZyYW1lX2RpZyAtMSAvLyBuYW1lOiBzdHJpbmcKCWR1cAoJbGVuCglpdG9iCglleHRyYWN0IDYgMgoJc3dhcAoJY29uY2F0CglhcHBfZ2xvYmFsX3B1dAoJcmV0c3ViCgovLyBnZXROYW1lKClzdHJpbmcKKmFiaV9yb3V0ZV9nZXROYW1lOgoJLy8gVGhlIEFCSSByZXR1cm4gcHJlZml4CglieXRlIDB4MTUxZjdjNzUKCgkvLyBleGVjdXRlIGdldE5hbWUoKXN0cmluZwoJY2FsbHN1YiBnZXROYW1lCglkdXAKCWxlbgoJaXRvYgoJZXh0cmFjdCA2IDIKCXN3YXAKCWNvbmNhdAoJY29uY2F0Cglsb2cKCWludCAxCglyZXR1cm4KCi8vIGdldE5hbWUoKTogc3RyaW5nCmdldE5hbWU6Cglwcm90byAwIDEKCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MTgKCS8vIHJldHVybiB0aGlzLmNvbXBhbnlOYW1lLnZhbHVlOwoJYnl0ZSAweDYzNmY2ZDcwNjE2ZTc5NGU2MTZkNjUgLy8gImNvbXBhbnlOYW1lIgoJYXBwX2dsb2JhbF9nZXQKCWV4dHJhY3QgMiAwCglyZXRzdWIKCiphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb246CglpbnQgMQoJcmV0dXJuCgoqY3JlYXRlX05vT3A6CgltZXRob2QgImNyZWF0ZUFwcGxpY2F0aW9uKCl2b2lkIgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9jcmVhdGVBcHBsaWNhdGlvbgoJZXJyCgoqY2FsbF9Ob09wOgoJbWV0aG9kICJyZWdpc3RlcihzdHJpbmcpdm9pZCIKCW1ldGhvZCAiZ2V0TmFtZSgpc3RyaW5nIgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9yZWdpc3RlciAqYWJpX3JvdXRlX2dldE5hbWUKCWVycg==",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjg2LjAKLy8gaHR0cHM6Ly9naXRodWIuY29tL2FsZ29yYW5kZm91bmRhdGlvbi9URUFMU2NyaXB0CgovLyBUaGlzIGNvbnRyYWN0IGlzIGNvbXBsaWFudCB3aXRoIGFuZC9vciBpbXBsZW1lbnRzIHRoZSBmb2xsb3dpbmcgQVJDczogWyBBUkM0IF0KCi8vIFRoZSBmb2xsb3dpbmcgdGVuIGxpbmVzIG9mIFRFQUwgaGFuZGxlIGluaXRpYWwgcHJvZ3JhbSBmbG93Ci8vIFRoaXMgcGF0dGVybiBpcyB1c2VkIHRvIG1ha2UgaXQgZWFzeSBmb3IgYW55b25lIHRvIHBhcnNlIHRoZSBzdGFydCBvZiB0aGUgcHJvZ3JhbSBhbmQgZGV0ZXJtaW5lIGlmIGEgc3BlY2lmaWMgYWN0aW9uIGlzIGFsbG93ZWQKLy8gSGVyZSwgYWN0aW9uIHJlZmVycyB0byB0aGUgT25Db21wbGV0ZSBpbiBjb21iaW5hdGlvbiB3aXRoIHdoZXRoZXIgdGhlIGFwcCBpcyBiZWluZyBjcmVhdGVkIG9yIGNhbGxlZAovLyBFdmVyeSBwb3NzaWJsZSBhY3Rpb24gZm9yIHRoaXMgY29udHJhY3QgaXMgcmVwcmVzZW50ZWQgaW4gdGhlIHN3aXRjaCBzdGF0ZW1lbnQKLy8gSWYgdGhlIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIGNvbnRyYWN0LCBpdHMgcmVzcGVjdGl2ZSBicmFuY2ggd2lsbCBiZSAiKk5PVF9JTVBMRU1FTlRFRCIgd2hpY2gganVzdCBjb250YWlucyAiZXJyIgp0eG4gQXBwbGljYXRpb25JRAohCmludCA2CioKdHhuIE9uQ29tcGxldGlvbgorCnN3aXRjaCAqY2FsbF9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJZXJyCgovLyByZWdpc3RlcihzdHJpbmcpdm9pZAoqYWJpX3JvdXRlX3JlZ2lzdGVyOgoJLy8gbmFtZTogc3RyaW5nCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglleHRyYWN0IDIgMAoKCS8vIGV4ZWN1dGUgcmVnaXN0ZXIoc3RyaW5nKXZvaWQKCWNhbGxzdWIgcmVnaXN0ZXIKCWludCAxCglyZXR1cm4KCi8vIHJlZ2lzdGVyKG5hbWU6IHN0cmluZyk6IHZvaWQKLy8KLy8gUmVnaXN0ZXIgdGhlIG5hbWUgb2YgdGhlIGNvbXBhbnkKLy8KLy8gQHBhcmFtIG5hbWUKcmVnaXN0ZXI6Cglwcm90byAxIDAKCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MTMKCS8vIHRoaXMuY29tcGFueU5hbWUudmFsdWUgPSBuYW1lCglieXRlIDB4NjM2ZjZkNzA2MTZlNzk0ZTYxNmQ2NSAvLyAiY29tcGFueU5hbWUiCglmcmFtZV9kaWcgLTEgLy8gbmFtZTogc3RyaW5nCglkdXAKCWxlbgoJaXRvYgoJZXh0cmFjdCA2IDIKCXN3YXAKCWNvbmNhdAoJYXBwX2dsb2JhbF9wdXQKCXJldHN1YgoKLy8gZ2V0TmFtZSgpc3RyaW5nCiphYmlfcm91dGVfZ2V0TmFtZToKCS8vIFRoZSBBQkkgcmV0dXJuIHByZWZpeAoJYnl0ZSAweDE1MWY3Yzc1CgoJLy8gZXhlY3V0ZSBnZXROYW1lKClzdHJpbmcKCWNhbGxzdWIgZ2V0TmFtZQoJZHVwCglsZW4KCWl0b2IKCWV4dHJhY3QgNiAyCglzd2FwCgljb25jYXQKCWNvbmNhdAoJbG9nCglpbnQgMQoJcmV0dXJuCgovLyBnZXROYW1lKCk6IHN0cmluZwovLwovLyBSZXRyaWV2ZXMgdGhlIHJlZ2lzdGVyZWQgbmFtZQovLwovLyBAcGFyYW0gbmFtZQovLyBAcmV0dXJucyBOYW1lIG9mIHRoZSBjb21wYW55CmdldE5hbWU6Cglwcm90byAwIDEKCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MjMKCS8vIHJldHVybiB0aGlzLmNvbXBhbnlOYW1lLnZhbHVlOwoJYnl0ZSAweDYzNmY2ZDcwNjE2ZTc5NGU2MTZkNjUgLy8gImNvbXBhbnlOYW1lIgoJYXBwX2dsb2JhbF9nZXQKCWV4dHJhY3QgMiAwCglyZXRzdWIKCi8vIGNyZWF0ZUFzYSgpdWludDY0CiphYmlfcm91dGVfY3JlYXRlQXNhOgoJLy8gVGhlIEFCSSByZXR1cm4gcHJlZml4CglieXRlIDB4MTUxZjdjNzUKCgkvLyBleGVjdXRlIGNyZWF0ZUFzYSgpdWludDY0CgljYWxsc3ViIGNyZWF0ZUFzYQoJaXRvYgoJY29uY2F0Cglsb2cKCWludCAxCglyZXR1cm4KCi8vIGNyZWF0ZUFzYSgpOiBudW1iZXIKLy8KLy8gUmV0cmlldmVzIHRoZSByZWdpc3RlcmVkIG5hbWUKLy8KLy8gQHJldHVybnMgSUQgb2YgdGhlIGNyZWF0ZWQgQVNBCmNyZWF0ZUFzYToKCXByb3RvIDAgMQoKCS8vIFB1c2ggZW1wdHkgYnl0ZXMgYWZ0ZXIgdGhlIGZyYW1lIHBvaW50ZXIgdG8gcmVzZXJ2ZSBzcGFjZSBmb3IgbG9jYWwgdmFyaWFibGVzCglieXRlIDB4CgoJLy8gY29udHJhY3RzL2RlbW8tdGVhbHNjcmlwdC5hbGdvLnRzOjMzCgkvLyByZWdpc3RlcmVkQXNhID0gc2VuZEFzc2V0Q3JlYXRpb24oewoJLy8gICAgICAgY29uZmlnQXNzZXRUb3RhbDogMSwKCS8vICAgICAgIGNvbmZpZ0Fzc2V0RGVjaW1hbHM6IDAsCgkvLyAgICAgICBjb25maWdBc3NldERlZmF1bHRGcm96ZW46IDAsCgkvLyAgICAgICBjb25maWdBc3NldE5hbWU6IHRoaXMuY29tcGFueU5hbWUudmFsdWUsCgkvLyAgICAgICBjb25maWdBc3NldFVuaXROYW1lOiAnVEtOJywKCS8vICAgICAgIGZlZTogMCwKCS8vICAgICB9KQoJaXR4bl9iZWdpbgoJaW50IGFjZmcKCWl0eG5fZmllbGQgVHlwZUVudW0KCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MzQKCS8vIGNvbmZpZ0Fzc2V0VG90YWw6IDEKCWludCAxCglpdHhuX2ZpZWxkIENvbmZpZ0Fzc2V0VG90YWwKCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MzUKCS8vIGNvbmZpZ0Fzc2V0RGVjaW1hbHM6IDAKCWludCAwCglpdHhuX2ZpZWxkIENvbmZpZ0Fzc2V0RGVjaW1hbHMKCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MzYKCS8vIGNvbmZpZ0Fzc2V0RGVmYXVsdEZyb3plbjogMAoJaW50IDAKCWl0eG5fZmllbGQgQ29uZmlnQXNzZXREZWZhdWx0RnJvemVuCgoJLy8gY29udHJhY3RzL2RlbW8tdGVhbHNjcmlwdC5hbGdvLnRzOjM3CgkvLyBjb25maWdBc3NldE5hbWU6IHRoaXMuY29tcGFueU5hbWUudmFsdWUKCWJ5dGUgMHg2MzZmNmQ3MDYxNmU3OTRlNjE2ZDY1IC8vICJjb21wYW55TmFtZSIKCWFwcF9nbG9iYWxfZ2V0CglleHRyYWN0IDIgMAoJaXR4bl9maWVsZCBDb25maWdBc3NldE5hbWUKCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MzgKCS8vIGNvbmZpZ0Fzc2V0VW5pdE5hbWU6ICdUS04nCglieXRlIDB4NTQ0YjRlIC8vICJUS04iCglpdHhuX2ZpZWxkIENvbmZpZ0Fzc2V0VW5pdE5hbWUKCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MzkKCS8vIGZlZTogMAoJaW50IDAKCWl0eG5fZmllbGQgRmVlCgoJLy8gU3VibWl0IGlubmVyIHRyYW5zYWN0aW9uCglpdHhuX3N1Ym1pdAoJaXR4biBDcmVhdGVkQXNzZXRJRAoJZnJhbWVfYnVyeSAwIC8vIHJlZ2lzdGVyZWRBc2E6IHVpbnQ2NAoKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czo0MQoJLy8gcmV0dXJuIHJlZ2lzdGVyZWRBc2EuaWQ7CglmcmFtZV9kaWcgMCAvLyByZWdpc3RlcmVkQXNhOiB1aW50NjQKCgkvLyBzZXQgdGhlIHN1YnJvdXRpbmUgcmV0dXJuIHZhbHVlCglmcmFtZV9idXJ5IDAKCXJldHN1YgoKKmFiaV9yb3V0ZV9jcmVhdGVBcHBsaWNhdGlvbjoKCWludCAxCglyZXR1cm4KCipjcmVhdGVfTm9PcDoKCW1ldGhvZCAiY3JlYXRlQXBwbGljYXRpb24oKXZvaWQiCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAwCgltYXRjaCAqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uCgllcnIKCipjYWxsX05vT3A6CgltZXRob2QgInJlZ2lzdGVyKHN0cmluZyl2b2lkIgoJbWV0aG9kICJnZXROYW1lKClzdHJpbmciCgltZXRob2QgImNyZWF0ZUFzYSgpdWludDY0IgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9yZWdpc3RlciAqYWJpX3JvdXRlX2dldE5hbWUgKmFiaV9yb3V0ZV9jcmVhdGVBc2EKCWVycg==",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDEw"
   },
   "contract": {
@@ -87,7 +92,7 @@ export const APP_SPEC: AppSpec = {
     "methods": [
       {
         "name": "register",
-        "desc": "Adds a and b",
+        "desc": "Register the name of the company",
         "args": [
           {
             "name": "name",
@@ -100,9 +105,19 @@ export const APP_SPEC: AppSpec = {
       },
       {
         "name": "getName",
+        "desc": "Retrieves the registered name",
         "args": [],
         "returns": {
           "type": "string"
+        }
+      },
+      {
+        "name": "createAsa",
+        "desc": "Retrieves the registered name",
+        "args": [],
+        "returns": {
+          "type": "uint64",
+          "desc": "ID of the created ASA"
         }
       },
       {
@@ -191,6 +206,15 @@ export type DemoTealscript = {
       }
       argsTuple: []
       returns: string
+    }>
+    & Record<'createAsa()uint64' | 'createAsa', {
+      argsObj: {
+      }
+      argsTuple: []
+      /**
+       * ID of the created ASA
+       */
+      returns: bigint
     }>
     & Record<'createApplication()void' | 'createApplication', {
       argsObj: {
@@ -281,7 +305,7 @@ export abstract class DemoTealscriptCallFactory {
   /**
    * Constructs a no op call for the register(string)void ABI method
    *
-   * Adds a and b
+   * Register the name of the company
    *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
@@ -297,6 +321,8 @@ export abstract class DemoTealscriptCallFactory {
   /**
    * Constructs a no op call for the getName()string ABI method
    *
+   * Retrieves the registered name
+   *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
@@ -304,6 +330,22 @@ export abstract class DemoTealscriptCallFactory {
   static getName(args: MethodArgs<'getName()string'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
       method: 'getName()string' as const,
+      methodArgs: Array.isArray(args) ? args : [],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the createAsa()uint64 ABI method
+   *
+   * Retrieves the registered name
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static createAsa(args: MethodArgs<'createAsa()uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'createAsa()uint64' as const,
       methodArgs: Array.isArray(args) ? args : [],
       ...params,
     }
@@ -410,7 +452,7 @@ export class DemoTealscriptClient {
   /**
    * Calls the register(string)void ABI method.
    *
-   * Adds a and b
+   * Register the name of the company
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
@@ -423,12 +465,27 @@ export class DemoTealscriptClient {
   /**
    * Calls the getName()string ABI method.
    *
+   * Retrieves the registered name
+   *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
   public getName(args: MethodArgs<'getName()string'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
     return this.call(DemoTealscriptCallFactory.getName(args, params))
+  }
+
+  /**
+   * Calls the createAsa()uint64 ABI method.
+   *
+   * Retrieves the registered name
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call: ID of the created ASA
+   */
+  public createAsa(args: MethodArgs<'createAsa()uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DemoTealscriptCallFactory.createAsa(args, params))
   }
 
   /**
@@ -503,6 +560,11 @@ export class DemoTealscriptClient {
         resultMappers.push(undefined)
         return this
       },
+      createAsa(args: MethodArgs<'createAsa()uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.createAsa(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
       clearState(args?: BareCallArgs & AppClientComposeCallCoreParams & CoreAppCallArgs) {
         promiseChain = promiseChain.then(() => client.clearState({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
@@ -539,7 +601,7 @@ export type DemoTealscriptComposer<TReturns extends [...any[]] = []> = {
   /**
    * Calls the register(string)void ABI method.
    *
-   * Adds a and b
+   * Register the name of the company
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
@@ -550,11 +612,24 @@ export type DemoTealscriptComposer<TReturns extends [...any[]] = []> = {
   /**
    * Calls the getName()string ABI method.
    *
+   * Retrieves the registered name
+   *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
   getName(args: MethodArgs<'getName()string'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'getName()string'>]>
+
+  /**
+   * Calls the createAsa()uint64 ABI method.
+   *
+   * Retrieves the registered name
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  createAsa(args: MethodArgs<'createAsa()uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'createAsa()uint64'>]>
 
   /**
    * Makes a clear_state call to an existing instance of the DemoTealscript smart contract.
