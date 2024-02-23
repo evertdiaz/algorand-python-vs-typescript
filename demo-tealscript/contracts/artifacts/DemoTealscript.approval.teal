@@ -21,91 +21,66 @@ switch *call_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEM
 *NOT_IMPLEMENTED:
 	err
 
-// sum(uint64,uint64)uint64
-*abi_route_sum:
-	// The ABI return prefix
-	byte 0x151f7c75
-
-	// b: uint64
-	txna ApplicationArgs 2
-	btoi
-
-	// a: uint64
+// register(string)void
+*abi_route_register:
+	// name: string
 	txna ApplicationArgs 1
-	btoi
+	extract 2 0
 
-	// execute sum(uint64,uint64)uint64
-	callsub sum
-	itob
-	concat
-	log
+	// execute register(string)void
+	callsub register
 	int 1
 	return
 
-// sum(a: number, b: number): number
+// register(name: string): void
 //
 // Adds a and b
 //
 // @param a
-// @param b
 // @returns Result of adding a and b
-sum:
-	proto 2 1
+register:
+	proto 1 0
 
-	// contracts/demo-tealscript.algo.ts:13
-	// return a + b;
-	frame_dig -1 // a: number
-	frame_dig -2 // b: number
-	+
+	// contracts/demo-tealscript.algo.ts:14
+	// this.companyName.value = name
+	byte 0x636f6d70616e794e616d65 // "companyName"
+	frame_dig -1 // name: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	app_global_put
 	retsub
 
-// difference(uint64,uint64)uint64
-*abi_route_difference:
+// getName()string
+*abi_route_getName:
 	// The ABI return prefix
 	byte 0x151f7c75
 
-	// b: uint64
-	txna ApplicationArgs 2
-	btoi
-
-	// a: uint64
-	txna ApplicationArgs 1
-	btoi
-
-	// execute difference(uint64,uint64)uint64
-	callsub difference
+	// execute getName()string
+	callsub getName
+	dup
+	len
 	itob
+	extract 6 2
+	swap
+	concat
 	concat
 	log
 	int 1
 	return
 
-// difference(a: number, b: number): number
-difference:
-	proto 2 1
+// getName(): string
+getName:
+	proto 0 1
 
-	// *if0_condition
-	// contracts/demo-tealscript.algo.ts:17
-	// a < b
-	frame_dig -1 // a: number
-	frame_dig -2 // b: number
-	<
-	bz *if0_end
-
-	// *if0_consequent
 	// contracts/demo-tealscript.algo.ts:18
-	// return b - a;
-	frame_dig -2 // b: number
-	frame_dig -1 // a: number
-	-
-	retsub
-
-*if0_end:
-	// contracts/demo-tealscript.algo.ts:20
-	// return a - b;
-	frame_dig -1 // a: number
-	frame_dig -2 // b: number
-	-
+	// return this.companyName.value;
+	byte 0x636f6d70616e794e616d65 // "companyName"
+	app_global_get
+	extract 2 0
 	retsub
 
 *abi_route_createApplication:
@@ -119,8 +94,8 @@ difference:
 	err
 
 *call_NoOp:
-	method "sum(uint64,uint64)uint64"
-	method "difference(uint64,uint64)uint64"
+	method "register(string)void"
+	method "getName()string"
 	txna ApplicationArgs 0
-	match *abi_route_sum *abi_route_difference
+	match *abi_route_register *abi_route_getName
 	err

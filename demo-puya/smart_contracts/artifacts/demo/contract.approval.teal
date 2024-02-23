@@ -1,42 +1,22 @@
 #pragma version 10
 
 smart_contracts.demo.contract.Demo.approval_program:
+    txn ApplicationID
+    bnz main_entrypoint@2
+    callsub __init__
+
+main_entrypoint@2:
     // smart_contracts/demo/contract.py:4
     // class Demo(ARC4Contract):
     txn NumAppArgs
-    bz main_bare_routing@6
-    method "sum(uint64,uint64)uint64"
-    method "difference(uint64,uint64)uint64"
+    bz main_bare_routing@8
+    method "register(string)void"
+    method "get_name()string"
     txna ApplicationArgs 0
-    match main_sum_route@2 main_difference_route@3
+    match main_register_route@4 main_get_name_route@5
     err // reject transaction
 
-main_sum_route@2:
-    // smart_contracts/demo/contract.py:5
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is NoOp
-    txn ApplicationID
-    assert // is not creating
-    // smart_contracts/demo/contract.py:4
-    // class Demo(ARC4Contract):
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // smart_contracts/demo/contract.py:5
-    // @arc4.abimethod()
-    callsub sum
-    itob
-    byte 0x151f7c75
-    swap
-    concat
-    log
-    int 1
-    return
-
-main_difference_route@3:
+main_register_route@4:
     // smart_contracts/demo/contract.py:9
     // @arc4.abimethod()
     txn OnCompletion
@@ -47,13 +27,21 @@ main_difference_route@3:
     // smart_contracts/demo/contract.py:4
     // class Demo(ARC4Contract):
     txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
     // smart_contracts/demo/contract.py:9
     // @arc4.abimethod()
-    callsub difference
-    itob
+    callsub register
+    int 1
+    return
+
+main_get_name_route@5:
+    // smart_contracts/demo/contract.py:13
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    callsub get_name
     byte 0x151f7c75
     swap
     concat
@@ -61,7 +49,7 @@ main_difference_route@3:
     int 1
     return
 
-main_bare_routing@6:
+main_bare_routing@8:
     // smart_contracts/demo/contract.py:4
     // class Demo(ARC4Contract):
     txn OnCompletion
@@ -74,43 +62,51 @@ main_bare_routing@6:
     return
 
 
-// smart_contracts.demo.contract.Demo.sum(a: uint64, b: uint64) -> uint64:
-sum:
-    // smart_contracts/demo/contract.py:5-6
-    // @arc4.abimethod()
-    // def sum(self, a: UInt64, b: UInt64) -> UInt64:
-    proto 2 1
-    // smart_contracts/demo/contract.py:7
-    // return a + b
-    frame_dig -2
-    frame_dig -1
-    +
-    retsub
-
-
-// smart_contracts.demo.contract.Demo.difference(a: uint64, b: uint64) -> uint64:
-difference:
+// smart_contracts.demo.contract.Demo.register(name: bytes) -> void:
+register:
     // smart_contracts/demo/contract.py:9-10
     // @arc4.abimethod()
-    // def difference(self, a: UInt64, b: UInt64) -> UInt64:
-    proto 2 1
+    // def register(self, name: arc4.String) -> None:
+    proto 1 0
     // smart_contracts/demo/contract.py:11
-    // if a < b:
-    frame_dig -2
+    // self.company_name = name.decode()
     frame_dig -1
-    <
-    bz difference_else_body@2
-    // smart_contracts/demo/contract.py:12
-    // return b - a
-    frame_dig -1
-    frame_dig -2
-    -
+    extract 2 0
+    byte "company_name"
+    swap
+    app_global_put
     retsub
 
-difference_else_body@2:
-    // smart_contracts/demo/contract.py:14
-    // return a - b
-    frame_dig -2
-    frame_dig -1
-    -
+
+// smart_contracts.demo.contract.Demo.get_name() -> bytes:
+get_name:
+    // smart_contracts/demo/contract.py:13-14
+    // @arc4.abimethod()
+    // def get_name(self) -> arc4.String:
+    proto 0 1
+    // smart_contracts/demo/contract.py:15
+    // return arc4.String.encode(self.company_name)
+    int 0
+    byte "company_name"
+    app_global_get_ex
+    assert // check value exists
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    retsub
+
+
+// smart_contracts.demo.contract.Demo.__init__() -> void:
+__init__:
+    // smart_contracts/demo/contract.py:5
+    // def __init__(self) -> None:
+    proto 0 0
+    // smart_contracts/demo/contract.py:6
+    // self.company_name = Bytes()
+    byte "company_name"
+    byte ""
+    app_global_put
     retsub

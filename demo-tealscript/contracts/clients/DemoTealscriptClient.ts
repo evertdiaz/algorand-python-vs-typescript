@@ -29,12 +29,12 @@ import type { ABIResult, TransactionWithSigner } from 'algosdk'
 import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer, modelsv2 } from 'algosdk'
 export const APP_SPEC: AppSpec = {
   "hints": {
-    "sum(uint64,uint64)uint64": {
+    "register(string)void": {
       "call_config": {
         "no_op": "CALL"
       }
     },
-    "difference(uint64,uint64)uint64": {
+    "getName()string": {
       "call_config": {
         "no_op": "CALL"
       }
@@ -58,13 +58,18 @@ export const APP_SPEC: AppSpec = {
       "reserved": {}
     },
     "global": {
-      "declared": {},
+      "declared": {
+        "companyName": {
+          "type": "bytes",
+          "key": "companyName"
+        }
+      },
       "reserved": {}
     }
   },
   "state": {
     "global": {
-      "num_byte_slices": 0,
+      "num_byte_slices": 1,
       "num_uints": 0
     },
     "local": {
@@ -73,7 +78,7 @@ export const APP_SPEC: AppSpec = {
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjg2LjAKLy8gaHR0cHM6Ly9naXRodWIuY29tL2FsZ29yYW5kZm91bmRhdGlvbi9URUFMU2NyaXB0CgovLyBUaGlzIGNvbnRyYWN0IGlzIGNvbXBsaWFudCB3aXRoIGFuZC9vciBpbXBsZW1lbnRzIHRoZSBmb2xsb3dpbmcgQVJDczogWyBBUkM0IF0KCi8vIFRoZSBmb2xsb3dpbmcgdGVuIGxpbmVzIG9mIFRFQUwgaGFuZGxlIGluaXRpYWwgcHJvZ3JhbSBmbG93Ci8vIFRoaXMgcGF0dGVybiBpcyB1c2VkIHRvIG1ha2UgaXQgZWFzeSBmb3IgYW55b25lIHRvIHBhcnNlIHRoZSBzdGFydCBvZiB0aGUgcHJvZ3JhbSBhbmQgZGV0ZXJtaW5lIGlmIGEgc3BlY2lmaWMgYWN0aW9uIGlzIGFsbG93ZWQKLy8gSGVyZSwgYWN0aW9uIHJlZmVycyB0byB0aGUgT25Db21wbGV0ZSBpbiBjb21iaW5hdGlvbiB3aXRoIHdoZXRoZXIgdGhlIGFwcCBpcyBiZWluZyBjcmVhdGVkIG9yIGNhbGxlZAovLyBFdmVyeSBwb3NzaWJsZSBhY3Rpb24gZm9yIHRoaXMgY29udHJhY3QgaXMgcmVwcmVzZW50ZWQgaW4gdGhlIHN3aXRjaCBzdGF0ZW1lbnQKLy8gSWYgdGhlIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIGNvbnRyYWN0LCBpdHMgcmVzcGVjdGl2ZSBicmFuY2ggd2lsbCBiZSAiKk5PVF9JTVBMRU1FTlRFRCIgd2hpY2gganVzdCBjb250YWlucyAiZXJyIgp0eG4gQXBwbGljYXRpb25JRAohCmludCA2CioKdHhuIE9uQ29tcGxldGlvbgorCnN3aXRjaCAqY2FsbF9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJZXJyCgovLyBzdW0odWludDY0LHVpbnQ2NCl1aW50NjQKKmFiaV9yb3V0ZV9zdW06CgkvLyBUaGUgQUJJIHJldHVybiBwcmVmaXgKCWJ5dGUgMHgxNTFmN2M3NQoKCS8vIGI6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgoJYnRvaQoKCS8vIGE6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQoJYnRvaQoKCS8vIGV4ZWN1dGUgc3VtKHVpbnQ2NCx1aW50NjQpdWludDY0CgljYWxsc3ViIHN1bQoJaXRvYgoJY29uY2F0Cglsb2cKCWludCAxCglyZXR1cm4KCi8vIHN1bShhOiBudW1iZXIsIGI6IG51bWJlcik6IG51bWJlcgovLwovLyBBZGRzIGEgYW5kIGIKLy8KLy8gQHBhcmFtIGEKLy8gQHBhcmFtIGIKLy8gQHJldHVybnMgUmVzdWx0IG9mIGFkZGluZyBhIGFuZCBiCnN1bToKCXByb3RvIDIgMQoKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czoxMwoJLy8gcmV0dXJuIGEgKyBiOwoJZnJhbWVfZGlnIC0xIC8vIGE6IG51bWJlcgoJZnJhbWVfZGlnIC0yIC8vIGI6IG51bWJlcgoJKwoJcmV0c3ViCgovLyBkaWZmZXJlbmNlKHVpbnQ2NCx1aW50NjQpdWludDY0CiphYmlfcm91dGVfZGlmZmVyZW5jZToKCS8vIFRoZSBBQkkgcmV0dXJuIHByZWZpeAoJYnl0ZSAweDE1MWY3Yzc1CgoJLy8gYjogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAyCglidG9pCgoJLy8gYTogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglidG9pCgoJLy8gZXhlY3V0ZSBkaWZmZXJlbmNlKHVpbnQ2NCx1aW50NjQpdWludDY0CgljYWxsc3ViIGRpZmZlcmVuY2UKCWl0b2IKCWNvbmNhdAoJbG9nCglpbnQgMQoJcmV0dXJuCgovLyBkaWZmZXJlbmNlKGE6IG51bWJlciwgYjogbnVtYmVyKTogbnVtYmVyCmRpZmZlcmVuY2U6Cglwcm90byAyIDEKCgkvLyAqaWYwX2NvbmRpdGlvbgoJLy8gY29udHJhY3RzL2RlbW8tdGVhbHNjcmlwdC5hbGdvLnRzOjE3CgkvLyBhIDwgYgoJZnJhbWVfZGlnIC0xIC8vIGE6IG51bWJlcgoJZnJhbWVfZGlnIC0yIC8vIGI6IG51bWJlcgoJPAoJYnogKmlmMF9lbmQKCgkvLyAqaWYwX2NvbnNlcXVlbnQKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czoxOAoJLy8gcmV0dXJuIGIgLSBhOwoJZnJhbWVfZGlnIC0yIC8vIGI6IG51bWJlcgoJZnJhbWVfZGlnIC0xIC8vIGE6IG51bWJlcgoJLQoJcmV0c3ViCgoqaWYwX2VuZDoKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czoyMAoJLy8gcmV0dXJuIGEgLSBiOwoJZnJhbWVfZGlnIC0xIC8vIGE6IG51bWJlcgoJZnJhbWVfZGlnIC0yIC8vIGI6IG51bWJlcgoJLQoJcmV0c3ViCgoqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uOgoJaW50IDEKCXJldHVybgoKKmNyZWF0ZV9Ob09wOgoJbWV0aG9kICJjcmVhdGVBcHBsaWNhdGlvbigpdm9pZCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb24KCWVycgoKKmNhbGxfTm9PcDoKCW1ldGhvZCAic3VtKHVpbnQ2NCx1aW50NjQpdWludDY0IgoJbWV0aG9kICJkaWZmZXJlbmNlKHVpbnQ2NCx1aW50NjQpdWludDY0IgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9zdW0gKmFiaV9yb3V0ZV9kaWZmZXJlbmNlCgllcnI=",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjg2LjAKLy8gaHR0cHM6Ly9naXRodWIuY29tL2FsZ29yYW5kZm91bmRhdGlvbi9URUFMU2NyaXB0CgovLyBUaGlzIGNvbnRyYWN0IGlzIGNvbXBsaWFudCB3aXRoIGFuZC9vciBpbXBsZW1lbnRzIHRoZSBmb2xsb3dpbmcgQVJDczogWyBBUkM0IF0KCi8vIFRoZSBmb2xsb3dpbmcgdGVuIGxpbmVzIG9mIFRFQUwgaGFuZGxlIGluaXRpYWwgcHJvZ3JhbSBmbG93Ci8vIFRoaXMgcGF0dGVybiBpcyB1c2VkIHRvIG1ha2UgaXQgZWFzeSBmb3IgYW55b25lIHRvIHBhcnNlIHRoZSBzdGFydCBvZiB0aGUgcHJvZ3JhbSBhbmQgZGV0ZXJtaW5lIGlmIGEgc3BlY2lmaWMgYWN0aW9uIGlzIGFsbG93ZWQKLy8gSGVyZSwgYWN0aW9uIHJlZmVycyB0byB0aGUgT25Db21wbGV0ZSBpbiBjb21iaW5hdGlvbiB3aXRoIHdoZXRoZXIgdGhlIGFwcCBpcyBiZWluZyBjcmVhdGVkIG9yIGNhbGxlZAovLyBFdmVyeSBwb3NzaWJsZSBhY3Rpb24gZm9yIHRoaXMgY29udHJhY3QgaXMgcmVwcmVzZW50ZWQgaW4gdGhlIHN3aXRjaCBzdGF0ZW1lbnQKLy8gSWYgdGhlIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIGNvbnRyYWN0LCBpdHMgcmVzcGVjdGl2ZSBicmFuY2ggd2lsbCBiZSAiKk5PVF9JTVBMRU1FTlRFRCIgd2hpY2gganVzdCBjb250YWlucyAiZXJyIgp0eG4gQXBwbGljYXRpb25JRAohCmludCA2CioKdHhuIE9uQ29tcGxldGlvbgorCnN3aXRjaCAqY2FsbF9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJZXJyCgovLyByZWdpc3RlcihzdHJpbmcpdm9pZAoqYWJpX3JvdXRlX3JlZ2lzdGVyOgoJLy8gbmFtZTogc3RyaW5nCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglleHRyYWN0IDIgMAoKCS8vIGV4ZWN1dGUgcmVnaXN0ZXIoc3RyaW5nKXZvaWQKCWNhbGxzdWIgcmVnaXN0ZXIKCWludCAxCglyZXR1cm4KCi8vIHJlZ2lzdGVyKG5hbWU6IHN0cmluZyk6IHZvaWQKLy8KLy8gQWRkcyBhIGFuZCBiCi8vCi8vIEBwYXJhbSBhCi8vIEByZXR1cm5zIFJlc3VsdCBvZiBhZGRpbmcgYSBhbmQgYgpyZWdpc3RlcjoKCXByb3RvIDEgMAoKCS8vIGNvbnRyYWN0cy9kZW1vLXRlYWxzY3JpcHQuYWxnby50czoxNAoJLy8gdGhpcy5jb21wYW55TmFtZS52YWx1ZSA9IG5hbWUKCWJ5dGUgMHg2MzZmNmQ3MDYxNmU3OTRlNjE2ZDY1IC8vICJjb21wYW55TmFtZSIKCWZyYW1lX2RpZyAtMSAvLyBuYW1lOiBzdHJpbmcKCWR1cAoJbGVuCglpdG9iCglleHRyYWN0IDYgMgoJc3dhcAoJY29uY2F0CglhcHBfZ2xvYmFsX3B1dAoJcmV0c3ViCgovLyBnZXROYW1lKClzdHJpbmcKKmFiaV9yb3V0ZV9nZXROYW1lOgoJLy8gVGhlIEFCSSByZXR1cm4gcHJlZml4CglieXRlIDB4MTUxZjdjNzUKCgkvLyBleGVjdXRlIGdldE5hbWUoKXN0cmluZwoJY2FsbHN1YiBnZXROYW1lCglkdXAKCWxlbgoJaXRvYgoJZXh0cmFjdCA2IDIKCXN3YXAKCWNvbmNhdAoJY29uY2F0Cglsb2cKCWludCAxCglyZXR1cm4KCi8vIGdldE5hbWUoKTogc3RyaW5nCmdldE5hbWU6Cglwcm90byAwIDEKCgkvLyBjb250cmFjdHMvZGVtby10ZWFsc2NyaXB0LmFsZ28udHM6MTgKCS8vIHJldHVybiB0aGlzLmNvbXBhbnlOYW1lLnZhbHVlOwoJYnl0ZSAweDYzNmY2ZDcwNjE2ZTc5NGU2MTZkNjUgLy8gImNvbXBhbnlOYW1lIgoJYXBwX2dsb2JhbF9nZXQKCWV4dHJhY3QgMiAwCglyZXRzdWIKCiphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb246CglpbnQgMQoJcmV0dXJuCgoqY3JlYXRlX05vT3A6CgltZXRob2QgImNyZWF0ZUFwcGxpY2F0aW9uKCl2b2lkIgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9jcmVhdGVBcHBsaWNhdGlvbgoJZXJyCgoqY2FsbF9Ob09wOgoJbWV0aG9kICJyZWdpc3RlcihzdHJpbmcpdm9pZCIKCW1ldGhvZCAiZ2V0TmFtZSgpc3RyaW5nIgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9yZWdpc3RlciAqYWJpX3JvdXRlX2dldE5hbWUKCWVycg==",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDEw"
   },
   "contract": {
@@ -81,37 +86,23 @@ export const APP_SPEC: AppSpec = {
     "desc": "",
     "methods": [
       {
-        "name": "sum",
+        "name": "register",
         "desc": "Adds a and b",
         "args": [
           {
-            "name": "a",
-            "type": "uint64"
-          },
-          {
-            "name": "b",
-            "type": "uint64"
+            "name": "name",
+            "type": "string"
           }
         ],
         "returns": {
-          "type": "uint64",
-          "desc": "Result of adding a and b"
+          "type": "void"
         }
       },
       {
-        "name": "difference",
-        "args": [
-          {
-            "name": "a",
-            "type": "uint64"
-          },
-          {
-            "name": "b",
-            "type": "uint64"
-          }
-        ],
+        "name": "getName",
+        "args": [],
         "returns": {
-          "type": "uint64"
+          "type": "string"
         }
       },
       {
@@ -188,24 +179,18 @@ export type DemoTealscript = {
    * Maps method signatures / names to their argument and return types.
    */
   methods:
-    & Record<'sum(uint64,uint64)uint64' | 'sum', {
+    & Record<'register(string)void' | 'register', {
       argsObj: {
-        a: bigint | number
-        b: bigint | number
+        name: string
       }
-      argsTuple: [a: bigint | number, b: bigint | number]
-      /**
-       * Result of adding a and b
-       */
-      returns: bigint
+      argsTuple: [name: string]
+      returns: void
     }>
-    & Record<'difference(uint64,uint64)uint64' | 'difference', {
+    & Record<'getName()string' | 'getName', {
       argsObj: {
-        a: bigint | number
-        b: bigint | number
       }
-      argsTuple: [a: bigint | number, b: bigint | number]
-      returns: bigint
+      argsTuple: []
+      returns: string
     }>
     & Record<'createApplication()void' | 'createApplication', {
       argsObj: {
@@ -213,6 +198,14 @@ export type DemoTealscript = {
       argsTuple: []
       returns: void
     }>
+  /**
+   * Defines the shape of the global and local state of the application.
+   */
+  state: {
+    global: {
+      'companyName'?: BinaryState
+    }
+  }
 }
 /**
  * Defines the possible abi call signatures
@@ -286,7 +279,7 @@ export abstract class DemoTealscriptCallFactory {
   }
 
   /**
-   * Constructs a no op call for the sum(uint64,uint64)uint64 ABI method
+   * Constructs a no op call for the register(string)void ABI method
    *
    * Adds a and b
    *
@@ -294,24 +287,24 @@ export abstract class DemoTealscriptCallFactory {
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static register(args: MethodArgs<'register(string)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
-      method: 'sum(uint64,uint64)uint64' as const,
-      methodArgs: Array.isArray(args) ? args : [args.a, args.b],
+      method: 'register(string)void' as const,
+      methodArgs: Array.isArray(args) ? args : [args.name],
       ...params,
     }
   }
   /**
-   * Constructs a no op call for the difference(uint64,uint64)uint64 ABI method
+   * Constructs a no op call for the getName()string ABI method
    *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static getName(args: MethodArgs<'getName()string'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
-      method: 'difference(uint64,uint64)uint64' as const,
-      methodArgs: Array.isArray(args) ? args : [args.a, args.b],
+      method: 'getName()string' as const,
+      methodArgs: Array.isArray(args) ? args : [],
       ...params,
     }
   }
@@ -415,27 +408,83 @@ export class DemoTealscriptClient {
   }
 
   /**
-   * Calls the sum(uint64,uint64)uint64 ABI method.
+   * Calls the register(string)void ABI method.
    *
    * Adds a and b
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
-   * @returns The result of the call: Result of adding a and b
+   * @returns The result of the call
    */
-  public sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(DemoTealscriptCallFactory.sum(args, params))
+  public register(args: MethodArgs<'register(string)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DemoTealscriptCallFactory.register(args, params))
   }
 
   /**
-   * Calls the difference(uint64,uint64)uint64 ABI method.
+   * Calls the getName()string ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
-  public difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(DemoTealscriptCallFactory.difference(args, params))
+  public getName(args: MethodArgs<'getName()string'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DemoTealscriptCallFactory.getName(args, params))
+  }
+
+  /**
+   * Extracts a binary state value out of an AppState dictionary
+   *
+   * @param state The state dictionary containing the state value
+   * @param key The key of the state value
+   * @returns A BinaryState instance containing the state value, or undefined if the key was not found
+   */
+  private static getBinaryState(state: AppState, key: string): BinaryState | undefined {
+    const value = state[key]
+    if (!value) return undefined
+    if (!('valueRaw' in value))
+      throw new Error(`Failed to parse state value for ${key}; received an int when expected a byte array`)
+    return {
+      asString(): string {
+        return value.value
+      },
+      asByteArray(): Uint8Array {
+        return value.valueRaw
+      }
+    }
+  }
+
+  /**
+   * Extracts a integer state value out of an AppState dictionary
+   *
+   * @param state The state dictionary containing the state value
+   * @param key The key of the state value
+   * @returns An IntegerState instance containing the state value, or undefined if the key was not found
+   */
+  private static getIntegerState(state: AppState, key: string): IntegerState | undefined {
+    const value = state[key]
+    if (!value) return undefined
+    if ('valueRaw' in value)
+      throw new Error(`Failed to parse state value for ${key}; received a byte array when expected a number`)
+    return {
+      asBigInt() {
+        return typeof value.value === 'bigint' ? value.value : BigInt(value.value)
+      },
+      asNumber(): number {
+        return typeof value.value === 'bigint' ? Number(value.value) : value.value
+      },
+    }
+  }
+
+  /**
+   * Returns the smart contract's global state wrapped in a strongly typed accessor with options to format the stored value
+   */
+  public async getGlobalState(): Promise<DemoTealscript['state']['global']> {
+    const state = await this.appClient.getGlobalState()
+    return {
+      get companyName() {
+        return DemoTealscriptClient.getBinaryState(state, 'companyName')
+      },
+    }
   }
 
   public compose(): DemoTealscriptComposer {
@@ -444,13 +493,13 @@ export class DemoTealscriptClient {
     let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
-      sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.sum(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+      register(args: MethodArgs<'register(string)void'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.register(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
-      difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.difference(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+      getName(args: MethodArgs<'getName()string'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.getName(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
@@ -488,7 +537,7 @@ export class DemoTealscriptClient {
 }
 export type DemoTealscriptComposer<TReturns extends [...any[]] = []> = {
   /**
-   * Calls the sum(uint64,uint64)uint64 ABI method.
+   * Calls the register(string)void ABI method.
    *
    * Adds a and b
    *
@@ -496,16 +545,16 @@ export type DemoTealscriptComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  sum(args: MethodArgs<'sum(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'sum(uint64,uint64)uint64'>]>
+  register(args: MethodArgs<'register(string)void'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'register(string)void'>]>
 
   /**
-   * Calls the difference(uint64,uint64)uint64 ABI method.
+   * Calls the getName()string ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  difference(args: MethodArgs<'difference(uint64,uint64)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'difference(uint64,uint64)uint64'>]>
+  getName(args: MethodArgs<'getName()string'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DemoTealscriptComposer<[...TReturns, MethodReturn<'getName()string'>]>
 
   /**
    * Makes a clear_state call to an existing instance of the DemoTealscript smart contract.

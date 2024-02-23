@@ -30,16 +30,16 @@ describe('demo contract', () => {
     return { client }
   }
 
-  test('sum and diff', async () => {
+  test('register', async () => {
     const { algod, indexer, testAccount } = localnet.context
     const { client } = await deploy(testAccount, algod, indexer)
 
-    const sum = await client.sum({ a: 25, b: 29 })
+    const name = 'Champions Corp'
 
-    expect(sum.return).toEqual(BigInt(54))
+    await client.register({ name })
 
-    const diff = await client.difference({ a: 25, b: 29 })
+    const result = await client.getName({})
 
-    expect(diff.return).toEqual(BigInt(4))
+    expect(result.return?.valueOf()).toBe(name)
   })
 })

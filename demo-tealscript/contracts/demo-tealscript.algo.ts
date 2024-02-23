@@ -2,21 +2,24 @@ import { Contract } from '@algorandfoundation/tealscript';
 
 // eslint-disable-next-line no-unused-vars
 class DemoTealscript extends Contract {
+  companyName = GlobalStateKey<string>();
+
   /**
-   * Adds a and b
+   * Register the name of the company
    *
-   * @param a
-   * @param b
-   * @returns Result of adding a and b
+   * @param name
    */
-  sum(a: number, b: number): number {
-    return a + b;
+  register(name: string): void {
+    this.companyName.value = name;
   }
 
-  difference(a: number, b: number): number {
-    if (a < b) {
-      return b - a;
-    }
-    return a - b;
+  /**
+   * Retrieves the registered name
+   *
+   * @param name
+   * @returns Name of the company
+   */
+  getName(): string {
+    return this.companyName.value;
   }
 }

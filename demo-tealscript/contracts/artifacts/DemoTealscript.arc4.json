@@ -3,37 +3,23 @@
   "desc": "",
   "methods": [
     {
-      "name": "sum",
+      "name": "register",
       "desc": "Adds a and b",
       "args": [
         {
-          "name": "a",
-          "type": "uint64"
-        },
-        {
-          "name": "b",
-          "type": "uint64"
+          "name": "name",
+          "type": "string"
         }
       ],
       "returns": {
-        "type": "uint64",
-        "desc": "Result of adding a and b"
+        "type": "void"
       }
     },
     {
-      "name": "difference",
-      "args": [
-        {
-          "name": "a",
-          "type": "uint64"
-        },
-        {
-          "name": "b",
-          "type": "uint64"
-        }
-      ],
+      "name": "getName",
+      "args": [],
       "returns": {
-        "type": "uint64"
+        "type": "string"
       }
     },
     {
